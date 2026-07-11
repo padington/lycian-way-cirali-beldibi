@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ликийская тропа с ребёнком: Чиралы → Бельдиби за 4 дня, от гестхауса к гестхаусу</title>
+<meta name="description" content="Семейный маршрут по восточной части Ликийской тропы: Чиралы — Бейджик — перевал Тахталы — Гедельме — каньон Гёйнюк — Бельдиби. Карта, ночёвки с контактами, логистика, запасные планы.">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --d1:#e63946; --d2:#9d0208; --d3:#7b2cbf; --d4:#0077b6; --alt:#9e9e9e;
+    --ink:#26221c; --muted:#6d675e; --paper:#faf7f2; --card:#ffffff; --line:#e7e1d6;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:#0b6e99;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+
+  header.hero{background:linear-gradient(160deg,#1d3557 0%,#2b4a75 55%,#3d6b8f 100%);color:#fff;padding:56px 0 40px}
+  header.hero h1{font-size:clamp(26px,4.5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:800}
+  header.hero p.sub{font-size:18px;opacity:.92;margin:0 0 22px;max-width:640px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+        padding:6px 14px;border-radius:999px;font-size:14px;white-space:nowrap}
+
+  nav.toc{position:sticky;top:0;z-index:1001;background:#fffdf9;border-bottom:1px solid var(--line);
+          box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+  nav.toc a{padding:12px 12px;font-size:14px;color:var(--ink);white-space:nowrap;font-weight:600}
+  nav.toc a:hover{color:var(--d1);text-decoration:none}
+
+  h2{font-size:26px;margin:48px 0 16px;font-weight:800}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin-bottom:6px}
+
+  #map{height:78vh;min-height:420px;border-radius:12px;border:1px solid var(--line);margin:8px 0 10px}
+  .map-note{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .btn{display:inline-block;background:#1d3557;color:#fff;padding:9px 18px;border-radius:8px;
+       font-weight:600;font-size:14.5px}
+  .btn:hover{background:#2b4a75;text-decoration:none}
+
+  .day{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--dc,#888);
+       border-radius:12px;padding:22px 24px;margin:20px 0}
+  .day h3{margin-top:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .day h3 .tag{font-size:12.5px;font-weight:700;color:#fff;background:var(--dc,#888);
+               padding:3px 10px;border-radius:999px;letter-spacing:.4px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;font-size:13.5px;color:var(--muted)}
+  .stat b{color:var(--ink)}
+  .sleep{background:#f4f8fb;border:1px solid #d9e6ef;border-radius:10px;padding:14px 18px;margin-top:14px}
+  .sleep h4{margin:0 0 8px;font-size:15px}
+  .sleep ul{margin-bottom:6px}
+  .coords{font-size:13px;color:var(--muted)}
+  .tip{background:#fff8e8;border:1px solid #f0e2b6;border-radius:10px;padding:12px 18px;margin-top:12px;font-size:14.5px}
+  .tip b{color:#8a6d00}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3efe7}
+  td .day-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+
+  .src-group{margin-bottom:18px}
+  .src-group h4{margin:0 0 6px;font-size:15px}
+  .src-group ul{font-size:14.5px}
+
+  footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);
+         color:var(--muted);font-size:13.5px}
+
+  .legend{background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);
+          font:12.5px/1.5 -apple-system,sans-serif;max-width:300px}
+  .legend h3{margin:0 0 6px;font-size:13.5px}
+  .sw{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .leaflet-popup-content{font:13px/1.45 -apple-system,sans-serif}
+  .nightIcon,.poiIcon,.exitIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .nightIcon{background:#1d3557}.poiIcon{background:#e9c46a;color:#333}.exitIcon{background:#6c757d}
+
+  @media (max-width:640px){
+    #map{height:60vh}
+    .day{padding:18px 16px}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Ликийская тропа с ребёнком:<br>Чиралы → Бельдиби за 4 дня</h1>
+    <p class="sub">Горная часть восточной Ликийки от гестхауса к гестхаусу — без палаток и тяжёлых рюкзаков.
+    Вечные огни Химеры, перевал под горой Тахталы, яйлы, генуэзская крепость и каньон Гёйнюк —
+    с финишем в десяти минутах от отеля в Бельдиби.</p>
+    <div class="chips">
+      <span class="chip">🥾 4 ходовых дня</span>
+      <span class="chip">📏 ~57 км</span>
+      <span class="chip">⛰️ макс. ~1950 м</span>
+      <span class="chip">🛏 ночёвки в пансионах</span>
+      <span class="chip">👨‍👩‍👧 темп 12–18 км/день</span>
+      <span class="chip">🗓 сентябрь–октябрь</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#map-sec">Карта</a>
+    <a href="#plan">План по дням</a>
+    <a href="#logistics">Заброска</a>
+    <a href="#practical">Практика</a>
+    <a href="#bailouts">Запасные планы</a>
+    <a href="#sources">Источники</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<h2 id="idea">Идея маршрута</h2>
+<p>Восточный конец Ликийской тропы упирается в район Кемера, и её «материковая» (горная) ветка —
+самый красивый способ прийти в Бельдиби пешком. Идём с юга на север: стартуем в приморском посёлке
+Чиралы, поднимаемся через форелевый Улупынар в горную деревню Бейджик, переваливаем хребет под
+вершиной Тахталы (2365 м), спускаемся через яйлы к средневековому Гедельме и финишируем эффектным
+спуском по каньону Гёйнюк. Из посёлка Гёйнюк до отеля в Бельдиби — 10 минут на долмуше.</p>
+<p>Ночуем в деревенских пансионах: хозяева кормят ужином и завтраком, поэтому несём только одежду,
+воду и перекус. Все брони — по телефону/WhatsApp, оплата наличными лирами: закрытый для российских
+карт Booking здесь просто не нужен.</p>
+
+<h2 id="map-sec">Карта маршрута</h2>
+<p class="map-note">Трек — реальная геометрия Ликийской тропы из OpenStreetMap, раскрашенная по дням.
+Кликайте по линиям и маркерам: 🛏 ночёвки с контактами · ⭐ достопримечательности · 🚕 запасные выходы.
+Серый пунктир — другие ветки тропы (прибрежный вариант через Текирову и уход на Хисарчандыр).
+Подложки (рельеф / схема / спутник) переключаются в правом верхнем углу.</p>
+<div id="map"></div>
+<p><a class="btn" href="lycian-route.gpx" download>⬇ Скачать GPX для Organic Maps / maps.me</a></p>
+
+<h2 id="plan">План по дням</h2>
+
+<table>
+<tr><th>День</th><th>Участок</th><th>Км</th><th>Набор / сброс</th><th>Время</th></tr>
+<tr><td><span class="day-dot" style="background:var(--d1)"></span>1</td>
+    <td>Чиралы → Улупынар → Бейджик</td><td>16 (или 9*)</td><td>+1200 м</td><td>6–7 ч</td></tr>
+<tr><td><span class="day-dot" style="background:var(--d2)"></span>2</td>
+    <td>Бейджик → перевал Тахталы → Яйла-Куздере</td><td>12,5</td><td>+1000 / −1130 м</td><td>~7 ч</td></tr>
+<tr><td><span class="day-dot" style="background:var(--d3)"></span>3</td>
+    <td>Куздере → Гедельме → Гёйнюк-яйла</td><td>~16</td><td>умеренно</td><td>6–7 ч</td></tr>
+<tr><td><span class="day-dot" style="background:var(--d4)"></span>4</td>
+    <td>Гёйнюк-яйла → каньон Гёйнюк → пос. Гёйнюк</td><td>12,6 + 3</td><td>+805 / −1574 м</td><td>~7 ч</td></tr>
+</table>
+<p class="map-note">* с подброской на такси до Улупынара — см. день 1.</p>
+
+<div class="day" style="--dc:#1d3557">
+  <h3><span class="tag">ДЕНЬ 0</span> Заброска в Чиралы + огни Химеры</h3>
+  <p>Из Бельдиби до Чиралы ~45 км. Проще всего — такси или заранее заказанный трансфер (~50 минут).
+  Бюджетный вариант с пересадками: долмуш <b>KA07</b> до Кемера (остановка у госпиталя на трассе D400) →
+  междугородний автобус в сторону Кумлуджи до поворота на Чиралы → долмуш или такси 7 км вниз к морю.
+  Осенью долмуш от поворота ходит реже — держите в голове план «такси от трассы».</p>
+  <p>Вечером — <b>Янарташ (Химера)</b>: от входа в нацпарк ~1,2 км вверх по каменистой тропе к площадкам,
+  где из скал десятками языков бьёт вечный огонь. Идти на закате, с фонариками; ребёнку — маршмеллоу
+  жарить на «драконьем пламени». Вход ~100 ₺.</p>
+  <div class="sleep">
+    <h4>🛏 Ночь 0 — Чиралы <span class="coords">(36.4056, 30.4762 ·
+      <a href="https://yandex.ru/maps/?pt=30.4762,36.4056&z=15" target="_blank">Я.Карты</a> ·
+      <a href="https://maps.google.com/?q=36.4056,30.4762" target="_blank">Google</a>)</span></h4>
+    <ul>
+      <li>Десятки пансионов: <b>Simge Pension</b>, <b>Çıralı Village Garden Pension</b> и др. — ~€40–80 за номер с завтраком.</li>
+      <li>Единственная точка маршрута, где можно бронировать онлайн (Ostrovok, Agoda) — или напрямую по WhatsApp.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day" style="--dc:var(--d1)">
+  <h3><span class="tag">ДЕНЬ 1</span> Чиралы → Улупынар → Бейджик <span class="coords">~16 км · +1200 м · 6–7 ч</span></h3>
+  <p>Тропа уходит от моря мимо Химеры (днём огни скромнее, но верхняя группа огней по пути — приятный бонус)
+  и через сосновый лес выводит к деревне <b>Улупынар</b> — столице форелевых ресторанов над ледяной горной
+  речкой. Обед здесь обязателен: <b>Havuzbaşı Şelale</b> или <b>Botanik</b> — столики прямо над водой,
+  форель ловят при вас. Дальше — 9,3 км мягкого набора через лес в горную деревню <b>Бейджик</b> (~900 м)
+  с видами на пирамиду Тахталы.</p>
+  <div class="tip"><b>Смягчение под ребёнка:</b> набор от моря до 900 м за день — многовато. Такси
+  Чиралы → Улупынар (10 минут по дороге) срезает 7 км и половину подъёма — останется приятная
+  половина дня.</div>
+  <div class="sleep">
+    <h4>🛏 Ночь 1 — Бейджик, ~900 м <span class="coords">(36.5041, 30.4246 ·
+      <a href="https://yandex.ru/maps/?pt=30.4246,36.5041&z=15" target="_blank">Я.Карты</a> ·
+      <a href="https://maps.google.com/?q=36.5041,30.4246" target="_blank">Google</a>)</span></h4>
+    <ul>
+      <li><b>Çınaraltı Pension</b> — комнаты над рестораном у огромного платана, хозяин Абдурахман:
+        <a href="tel:+902428161117">+90 242 816 11 17</a>, <a href="https://wa.me/905325584509" target="_blank">+90 532 558 45 09 (WhatsApp)</a></li>
+      <li><b>Olympos Mountain Lodge</b> — бутик-лодж на 6 номеров с бассейном:
+        <a href="tel:+902428161246">+90 242 816 12 46</a></li>
+      <li><b>Nara Resort Hotel</b> — просторные номера с завтраком: <a href="tel:+902428161067">+90 242 816 10 67</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="day" style="--dc:var(--d2)">
+  <h3><span class="tag">ДЕНЬ 2</span> Бейджик → перевал Тахталы → Яйла-Куздере <span class="coords">12,5 км · +1000 / −1130 м · ~7 ч</span></h3>
+  <p>Ключевой и самый зрелищный день: через Верхний Бейджик тропа набирает высоту к перевалу
+  (~1850–1950 м) восточнее вершины <b>Тахталы (2365 м)</b> — это высшая точка маршрута с панорамой
+  на всё побережье от Олимпоса до Антальи. Затем спуск через высокогорные пастбища <b>Чукурьяйла</b>
+  (~1700 м) в уютную деревню <b>Яйла-Куздере</b> (~900 м), спрятанную в тополях и орешнике.</p>
+  <div class="tip"><b>Выходить рано</b> (не позже 8:00): день длинный, а после обеда на высоте
+  может задувать. Если утром ребёнок «не в ресурсе» — такси из Бейджика в объезд через Кемер прямо
+  в Гедельме или Куздере, и день превращается в лёгкую прогулку. Опция для сильных: +2–3 ч на саму
+  вершину Тахталы — и вниз на канатке (см. запасные планы).</div>
+  <div class="sleep">
+    <h4>🛏 Ночь 2 — Яйла-Куздере, ~900 м <span class="coords">(36.5751, 30.4230 ·
+      <a href="https://yandex.ru/maps/?pt=30.4230,36.5751&z=15" target="_blank">Я.Карты</a> ·
+      <a href="https://maps.google.com/?q=36.5751,30.4230" target="_blank">Google</a>)</span></h4>
+    <ul>
+      <li><b>Süleyman’s House / Yayla Kuzdere Bungalows</b> — деревянные шале с удобствами, кормят,
+        открыто круглый год. Берри и Сулейман: <a href="https://wa.me/905363218489" target="_blank">+90 536 321 84 89 (WhatsApp)</a>,
+        <a href="tel:+905302026885">+90 530 202 68 85</a></li>
+      <li><b>Sevim Abla’s House</b> — домашний приём у Севим: <a href="tel:+905392953336">+90 539 295 33 36</a></li>
+      <li><b>Türker Camping Bungalows</b>: <a href="tel:+905322744853">+90 532 274 48 53</a></li>
+    </ul>
+    <p class="coords">Магазина в деревне нет — ужин и завтрак у хозяев (предупредите при брони).</p>
+  </div>
+</div>
+
+<div class="day" style="--dc:var(--d3)">
+  <h3><span class="tag">ДЕНЬ 3</span> Куздере → Гедельме → Гёйнюк-яйла <span class="coords">~16 км · умеренный рельеф · 6–7 ч</span></h3>
+  <p>Отдыхательный день после перевала. Через 7 км лесной тропы — <b>Гедельме</b>: руины генуэзской
+  крепости, 2000-летний платан, пещера (150 м ходов) и магазины — единственная дозакупка еды и воды
+  на маршруте. Дальше 9,2 км по яйлам и сосновым гривам до крошечной <b>Гёйнюк-яйлы</b>.</p>
+  <div class="sleep">
+    <h4>🛏 Ночь 3 — Гёйнюк-яйла <span class="coords">(36.6679, 30.4553 ·
+      <a href="https://yandex.ru/maps/?pt=30.4553,36.6679&z=15" target="_blank">Я.Карты</a> ·
+      <a href="https://maps.google.com/?q=36.6679,30.4553" target="_blank">Google</a>)</span></h4>
+    <ul>
+      <li><b>Дом Камиле/Надира</b> (Nadir Kaptan’ın Yeri) — первый дом слева при входе в деревню.
+        Аутентично и просто: комната + ужин + завтрак ~3200 ₺, удобства общие, наличные.
+        Бронь только заранее: <a href="https://wa.me/905326162865" target="_blank">+90 532 616 28 65 (WhatsApp)</a>.
+        Это <b>единственное жильё</b> в деревне!</li>
+    </ul>
+    <p class="coords">Комфортный запасной вариант: ночевать в Гедельме — <b>Caner Pension</b> у мечети
+      (Шевкет: <a href="tel:+902428171053">+90 242 817 10 53</a>, <a href="https://wa.me/905339316466" target="_blank">+90 533 931 64 66</a>)
+      или <b>Gül Mountain Lodge</b> с крытым бассейном и сауной, 2 км от тропы
+      (Эмин Гюль: <a href="https://wa.me/905382537277" target="_blank">+90 538 253 72 77</a>) —
+      тогда день 4 удлиняется до ~22 км.</p>
+  </div>
+</div>
+
+<div class="day" style="--dc:var(--d4)">
+  <h3><span class="tag">ДЕНЬ 4</span> Гёйнюк-яйла → каньон Гёйнюк → Бельдиби <span class="coords">12,6 км + 3 км грунтовки · +805 / −1574 м · ~7 ч</span></h3>
+  <p>Финал-подарок: длинный спуск в <b>каньон Гёйнюк</b> — скальные стены, изумрудная река, верёвочный
+  мост над ущельем и купание в нижней части (вода бодрит!). Спуск местами крутой и каменистый —
+  треккинговые палки обязательны; осенью пара бродов проходится по камням. Наберите воду на яйле:
+  после неё до каньона источник всего один. Последние 3 км от туристической зоны каньона до посёлка —
+  грунтовка, где легко поймать транспорт. Из Гёйнюка до отеля в Бельдиби — долмуш <b>KA07</b> или
+  такси, ~10 минут.</p>
+  <div class="tip"><b>С утра позвоните хозяевам в Бельдиби</b> — к ужину вы уже в бассейне отеля.</div>
+</div>
+
+<h2 id="logistics">Логистика</h2>
+<h3>Туда (день 0): Бельдиби → Чиралы</h3>
+<ul>
+  <li><b>Такси/трансфер</b>: ~45 км, ~50 минут — самый простой вариант с ребёнком (ориентир ~€40–60).</li>
+  <li><b>Общественный транспорт</b>: долмуш KA07 (идёт по Бельдиби вдоль отелей) → Кемер, остановка
+    у госпиталя на D400 → любой автобус в сторону Кумлуджи/Демре/Каша («Batı Antalya», «Çiçek Tur»,
+    интервал ~30–60 мин, от ~100 ₺, наличные) → выйти у поворота на Чиралы → долмуш/такси 7 км вниз.</li>
+</ul>
+<h3>Обратно (день 4): Гёйнюк → Бельдиби</h3>
+<ul>
+  <li>Долмуш <b>KA07</b> (заезжает и в Гёйнюк, и в Бельдиби) или такси — 10 минут.</li>
+</ul>
+
+<h2 id="practical">Практика</h2>
+<ul>
+  <li><b>Сезон:</b> сентябрь — начало октября идеальны: сухо, не жарко, всё жильё работает, море ещё тёплое.
+    Снег на Тахталы возможен с конца октября.</li>
+  <li><b>Вода:</b> 2–2,5 л на человека. Пополнение: Улупынар, Куздере, Гедельме (магазины), Гёйнюк-яйла.
+    К концу осени часть родников пересыхает.</li>
+  <li><b>Деньги:</b> банкоматов на маршруте нет. Весь нал — из Бельдиби: ориентир 15–20 тыс. ₽ в лирах
+    на жильё и еду на троих.</li>
+  <li><b>Разметка:</b> красно-белые метки Ликийской тропы; на спуске к каньону есть путаные развилки —
+    ведите GPX-трек в Organic Maps / maps.me / AllTrails.</li>
+  <li><b>Снаряжение:</b> треккинговые палки (взрослым точно), разношенные ботинки, фонарики (Химера!),
+    флиски и шапки для ночёвок на 900 м+, купальники для каньона, повербанк.</li>
+  <li><b>Брони:</b> прозвонить/написать всем хозяевам за 1–2 недели; телефоны — из базы
+    Culture Routes Society и свежих отчётов, перед поездкой скачайте их актуальную таблицу жилья
+    (ссылка в источниках).</li>
+</ul>
+
+<h2 id="bailouts">Запасные планы</h2>
+<ul>
+  <li><b>Бейджик</b> — асфальт, такси в любую сторону (в т.ч. в объезд в Гедельме, если перевал не по силам).</li>
+  <li><b>Канатка Olympos Teleferik</b>: с перевала +2–3 ч на вершину Тахталы — и вниз по воздуху к
+    Текирове, оттуда такси в Бельдиби. Готовый укороченный 2–3-дневный вариант с эффектным финалом
+    (билеты и расписание: <a href="https://www.tahtali.com" target="_blank">tahtali.com</a>).</li>
+  <li><b>Гедельме</b> — автодорога до Кемера/Гёйнюка, такси в любой момент.</li>
+  <li><b>Каньон Гёйнюк</b> — в нижней трети грунтовка с транспортом до посёлка.</li>
+</ul>
+
+<h2 id="sources">Источники</h2>
+<div class="src-group">
+  <h4>Тропа и этапы</h4>
+  <ul>
+    <li><a href="https://trekopedia.com/lycian-way-trial-sections-441/" target="_blank">Trekopedia — все секции Ликийской тропы с км/временем</a></li>
+    <li><a href="https://trekopedia.com/goynuk-yayla-goynuk-canyon-57/" target="_blank">Trekopedia — этап Гёйнюк-яйла → каньон Гёйнюк</a></li>
+    <li><a href="https://trekopedia.com/goynuk-canyon-goynuk-62/" target="_blank">Trekopedia — выход из каньона в Гёйнюк</a></li>
+    <li><a href="https://www.lycianway.org/2012/04/day-3-yayla-kuzdere-mt-tahtal-beycik.html" target="_blank">lycianway.org — Куздере → Тахталы → Бейджик</a></li>
+    <li><a href="https://www.alltrails.com/trail/turkey/antalya/lycian-way-gedelme-goynuk-canyon" target="_blank">AllTrails — Гедельме → каньон Гёйнюк (отзывы)</a></li>
+    <li><a href="https://en.wikivoyage.org/wiki/Lycian_Way" target="_blank">Wikivoyage — Lycian Way</a></li>
+  </ul>
+</div>
+<div class="src-group">
+  <h4>Жильё</h4>
+  <ul>
+    <li><a href="https://cultureroutesinturkey.com/the-lycian-way/accommodation/" target="_blank">Culture Routes Society — официальная таблица жилья на тропе (скачать перед поездкой!)</a></li>
+    <li><a href="https://www.lycianway.org/2022/01/lycian-way-accommodation-facilities.html" target="_blank">lycianway.org — список жилья и контактов по этапам</a></li>
+    <li><a href="https://lotuseaters.travel/2025/07/29/a-guide-to-lycian-way-accommodation-where-to-stay/" target="_blank">Lotus Eaters — гид по жилью на тропе (2025)</a></li>
+    <li><a href="https://fieldtripnotebook.com/the-diy-guide-to-hiking-inn-to-inn-on-the-lycian-way/" target="_blank">Field Trip Notebook — как ходить Ликийку от гестхауса к гестхаусу</a></li>
+  </ul>
+</div>
+<div class="src-group">
+  <h4>Транспорт и достопримечательности</h4>
+  <ul>
+    <li><a href="https://www.turk-trip.ru/kemer-transport.html" target="_blank">Долмуши Кемера: KA07 и маршруты (turk-trip.ru)</a></li>
+    <li><a href="https://www.turk-trip.ru/kak-samostoyatelno-doehat-iz-kemer-do-olimpos-chiraly-na-avtobbuse.html" target="_blank">Кемер → Чиралы на автобусе (turk-trip.ru)</a></li>
+    <li><a href="https://thisisantalya.com/yanartas-chimera/" target="_blank">Янарташ/Химера — как посещать</a></li>
+  </ul>
+</div>
+<div class="src-group">
+  <h4>Отчёты о походах (русскоязычные)</h4>
+  <ul>
+    <li><a href="https://pavelrudenko.ru/blog/turtsiya/likiyskaya-tropa-chast-1/" target="_blank">Павел Руденко — Ликийская тропа, 4 части с треками</a></li>
+    <li><a href="https://www.encyclopedia-stranstviy.com/2022/06/goynuk-chirali-2021.html" target="_blank">Энциклопедия странствий — Гёйнюк → Чиралы в октябре</a></li>
+    <li><a href="https://lamastravels.in.ua/travels/lycian-way-part3-71" target="_blank">Lamas Travels — участок Гедельме → Тахталы</a></li>
+  </ul>
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Маршрут спланирован в июле 2026. Телефоны и цены — из базы Culture Routes Society и отчётов
+    2022–2025 годов: перед поездкой обязательно прозвоните хозяев и скачайте свежую таблицу жилья.
+    Трек — данные © участников <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>
+    (ODbL); координаты жилья ориентировочные (центр деревни). Карта: Leaflet + OpenTopoMap / OSM / Esri.</p>
+  </div>
+</footer>
+
+<script src="trail-data.js"></script>
+<script>
+const DAY_STYLE = {
+  1:{color:'#e63946',label:'День 1 · Чиралы → Улупынар → Бейджик · ~16 км, +1200 м'},
+  2:{color:'#9d0208',label:'День 2 · Бейджик → перевал Тахталы (~1900 м) → Яйла-Куздере · 12,5 км'},
+  3:{color:'#7b2cbf',label:'День 3 · Куздере → Гедельме → Гёйнюк-яйла · ~16 км'},
+  4:{color:'#0077b6',label:'День 4 · Гёйнюк-яйла → каньон Гёйнюк → пос. Гёйнюк · ~15 км'},
+  0:{color:'#9e9e9e',label:'Другие ветки Ликийской тропы'}
+};
+
+const map = L.map('map');
+const topo = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+  {maxZoom:17, attribution:'&copy; OpenStreetMap, SRTM | OpenTopoMap (CC-BY-SA)'});
+const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:19, attribution:'&copy; OpenStreetMap'});
+const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {maxZoom:18, attribution:'&copy; Esri World Imagery'});
+topo.addTo(map);
+
+let allBounds = null;
+const groups = {};
+for (const day of [0,1,2,3,4]) {
+  const g = L.featureGroup();
+  for (const seg of TRAIL[day]) {
+    const line = L.polyline(seg, day===0
+      ? {color:DAY_STYLE[0].color, weight:2, opacity:.55, dashArray:'4 5'}
+      : {color:DAY_STYLE[day].color, weight:4.5, opacity:.9});
+    if (day!==0) line.bindPopup('<b>'+DAY_STYLE[day].label+'</b>');
+    line.addTo(g);
+  }
+  g.addTo(map);
+  groups[DAY_STYLE[day].label] = g;
+  if (day!==0 && TRAIL[day].length) {
+    allBounds = allBounds ? allBounds.extend(g.getBounds()) : L.latLngBounds(g.getBounds().getSouthWest(), g.getBounds().getNorthEast());
+  }
+}
+
+const tr1 = L.polyline([[36.7234,30.5610],[36.6701,30.5481],[36.55,30.51],[36.4750,30.4990],[36.4155,30.4805],[36.4056,30.4762]],
+  {color:'#333',weight:2,dashArray:'2 7',opacity:.7}).bindPopup('<b>Заброска, день 0:</b> Бельдиби → Чиралы<br>Такси/трансфер ~50 мин, или долмуш KA07 до Кемера → автобус на Кумлуджу до поворота на Чиралы → долмуш 7 км.');
+const tr2 = L.polyline([[36.6701,30.5481],[36.7234,30.5610]],
+  {color:'#2a9d8f',weight:3,dashArray:'2 7',opacity:.9}).bindPopup('<b>Финиш:</b> Гёйнюк → Бельдиби<br>Долмуш KA07 или такси, ~10 минут.');
+tr1.addTo(map); tr2.addTo(map);
+
+function icon(cls, emoji, size) {
+  return L.divIcon({className:'', html:'<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px">'+emoji+'</div>',
+    iconSize:[size,size], iconAnchor:[size/2,size/2], popupAnchor:[0,-size/2]});
+}
+const night = icon('nightIcon','\u{1F6CF}',30), poi = icon('poiIcon','⭐',24), exitI = icon('exitIcon','\u{1F695}',24);
+
+const NIGHTS = [
+ [36.4056,30.4762,'<b>Ночь 0 — Чиралы</b><br>Simge Pension, Çıralı Village Garden и др. — ~€40–80.<br>Бронь: Ostrovok/Agoda или WhatsApp.<br>Вечером — Химера на закате.'],
+ [36.5041,30.4246,'<b>Ночь 1 — Бейджик (~900 м)</b><br>Çınaraltı Pension — <a href="https://wa.me/905325584509">+90 532 558 45 09</a><br>Olympos Mountain Lodge — +90 242 816 12 46<br>Nara Resort Hotel — +90 242 816 10 67'],
+ [36.5751,30.4230,'<b>Ночь 2 — Яйла-Куздере (~900 м)</b><br>Süleyman’s Bungalows — <a href="https://wa.me/905363218489">+90 536 321 84 89</a> (круглый год, кормят)<br>Sevim Abla’s House — +90 539 295 33 36<br>Магазина нет — еда у хозяев.'],
+ [36.6679,30.4553,'<b>Ночь 3 — Гёйнюк-яйла</b><br>Дом Камиле/Надира — <a href="https://wa.me/905326162865">+90 532 616 28 65</a><br>~3200 ₺ ужин+ночь+завтрак, наличные.<br>Единственное жильё — бронировать заранее!'],
+ [36.7234,30.5610,'<b>Финиш — Бельдиби</b><br>Ваш отель. Из Гёйнюка — долмуш KA07 или такси ~10 мин.']
+];
+NIGHTS.forEach(n=>L.marker([n[0],n[1]],{icon:night}).bindPopup(n[2]).addTo(map));
+
+const POIS = [
+ [36.4315,30.4560,'<b>Янарташ (Химера)</b><br>Вечные огни. Идти на закате, фонарики и маршмеллоу. Вход ~100 ₺.'],
+ [36.4553,30.4306,'<b>Улупынар</b><br>Форелевые рестораны у водопадов (Havuzbaşı, Botanik) — обед дня 1.'],
+ [36.5363,30.4422,'<b>Гора Тахталы, 2365 м</b><br>Тропа идёт через перевал (~1850–1950 м) восточнее вершины.<br>Опция: +2–3 ч на вершину и вниз на канатке Olympos Teleferik (tahtali.com).'],
+ [36.5475,30.4099,'<b>Чукурьяйла (~1700 м)</b><br>Высокогорные пастбища под Тахталы.'],
+ [36.6128,30.4417,'<b>Гедельме</b><br>Генуэзская крепость, 2000-летний платан, пещера. Магазины — дозакупка еды и воды.'],
+ [36.6791,30.4903,'<b>Каньон Гёйнюк — верховья</b><br>Спуск местами крутой, палки обязательны; броды по камням (осенью мелко).'],
+ [36.6808,30.5226,'<b>Каньон Гёйнюк — мост и купание</b><br>Верёвочный мост над ущельем, купание. Дальше 3 км грунтовки до посёлка.']
+];
+POIS.forEach(n=>L.marker([n[0],n[1]],{icon:poi}).bindPopup(n[2]).addTo(map));
+
+const EXITS = [
+ [36.5000,30.4300,'<b>Запасной выход: Бейджик</b><br>Асфальт, такси в любую сторону (в т.ч. в объезд в Гедельме).'],
+ [36.6147,30.4456,'<b>Запасной выход: Гедельме</b><br>Автодорога до Кемера/Гёйнюка, такси в любой момент.']
+];
+EXITS.forEach(n=>L.marker([n[0],n[1]],{icon:exitI}).bindPopup(n[2]).addTo(map));
+
+map.fitBounds(allBounds.pad(0.08));
+L.control.layers({'Рельеф (OpenTopoMap)':topo,'Схема (OSM)':osm,'Спутник (Esri)':esri}, groups, {collapsed:true}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+
+const legend = L.control({position:'bottomleft'});
+legend.onAdd = function(){
+  const div = L.DomUtil.create('div','legend');
+  let h = '<h3>Чиралы → Бельдиби, 4 дня</h3>';
+  for (const d of [1,2,3,4,0]) h += '<div><span class="sw" style="background:'+DAY_STYLE[d].color+'"></span>'+DAY_STYLE[d].label+'</div>';
+  h += '<div style="margin-top:6px">\u{1F6CF} ночёвки · ⭐ интересное · \u{1F695} запасные выходы<br><span class="sw" style="background:#333"></span>заброска/возврат (транспорт)</div>';
+  div.innerHTML = h;
+  return div;
+};
+legend.addTo(map);
+</script>
+</body>
+</html>
