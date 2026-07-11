@@ -407,7 +407,7 @@ try {
     groups[DAY_STYLE[day].label] = g;
     if (day!==0) allBounds = allBounds ? allBounds.extend(g.getBounds()) : g.getBounds();
   }
-  if (allBounds) map.fitBounds(allBounds.pad(0.08));
+  if (allBounds) map.fitBounds(allBounds.extend(L.latLng(36.7480,30.5750)).pad(0.05));  // включаем отель Juju в стартовый вид
 } catch (e) { console.error('trail render failed', e); }
 
 // грунтовка: выход из каньона -> посёлок Гёйнюк (~3 км, нет в OSM-реляции тропы)
