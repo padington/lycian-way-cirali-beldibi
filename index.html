@@ -195,7 +195,7 @@
 <div class="lgrow"><span class="sw" style="background:#e0218a"></span><b>мой трек</b> (запись maps.me): день 2, 8 окт · дни 3–4, 9–10 окт</div>
 <hr>
 <div class="lgrow"><b>С / 1 / 2 / 3 / Ф</b> — старт, ночёвки, финиш</div>
-<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · 🏨 отель Juju</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · 🏨 отель Juju · 📷 мои фото</div>
 </aside></div>
 <div class="tripsum">
   <span>🥾 <b>57,9 км</b> тропы + 3 км грунтовки</span>
@@ -850,6 +850,32 @@ ACTUAL.forEach((ln,i)=>{
   .forEach(([ll,txt])=>actualG.addLayer(L.circleMarker(ll,{radius:6,color:'#fff',weight:2,fillColor:'#e0218a',fillOpacity:1}).bindPopup('<b>'+txt+'</b>')));
 actualG.addTo(map);
 groups['Мой трек (maps.me)'] = actualG;
+
+// мои фото с GPS из EXIF; координаты, время и высота — из самих снимков
+const PHOTOS = [
+  {f:'IMG_4553', ll:[36.52042,30.42073], when:'8 окт, 11:22', approx:true,
+   cap:'Подъём от Бейджика: облака садятся на хребет'},
+  {f:'IMG_4581', ll:[36.53988,30.41711], when:'8 окт, 13:50', ele:1760,
+   cap:'Обед на перевале: сублиматы из дома'},
+  {f:'IMG_4585', ll:[36.53988,30.41711], when:'8 окт, 13:56', ele:1760,
+   cap:'Гранат на перевале'},
+  {f:'IMG_7181', ll:[36.67494,30.46340], when:'10 окт, 09:08', ele:696,
+   cap:'Утро дня 4: вид назад на домики, где ночевали 9→10 окт'}
+];
+const photoI = icon('poiIcon','\u{1F4F7}',26,'#e0218a');
+const photoHtml = ph =>
+  '<a href="photos/'+ph.f+'.jpg" target="_blank"><img src="photos/'+ph.f+'_thumb.jpg" alt="'+ph.cap+'" style="width:260px;max-width:100%;border-radius:6px;display:block"></a>' +
+  '<b>'+ph.cap+'</b><br><span style="color:#6d675e">'+ph.when+(ph.ele?' · ~'+ph.ele+' м':'') +
+  (ph.approx?'<br><i>место примерное: снято до начала записи трека</i>':'')+'</span>';
+const photoSpots = {};
+PHOTOS.forEach(ph => (photoSpots[ph.ll.join(',')] = photoSpots[ph.ll.join(',')] || []).push(ph));
+const photosG = L.featureGroup(Object.values(photoSpots).map(list => {
+  const m = L.marker(list[0].ll,{icon:photoI, zIndexOffset:900})
+    .bindPopup('<div style="max-height:420px;overflow-y:auto">'+list.map(photoHtml).join('<hr style="margin:8px 0">')+'</div>', {maxWidth:290});
+  if (list.length>1) m.bindTooltip(list.length+' фото', {permanent:true, direction:'top', offset:[0,-12], className:'stLabel'});
+  return m;
+})).addTo(map);
+groups['Мои фото'] = photosG;
 
 L.control.layers({'Схема (OSM)':osm,'Рельеф (OpenTopoMap)':topo,'Спутник (Esri)':esri}, groups, {collapsed:true}).addTo(map);
 L.control.scale({imperial:false}).addTo(map);
