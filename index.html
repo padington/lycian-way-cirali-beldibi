@@ -195,7 +195,7 @@
 <div class="lgrow"><span class="sw" style="background:#e0218a"></span><b>мой трек</b> (запись maps.me): день 2, 8 окт · дни 3–4, 9–10 окт</div>
 <hr>
 <div class="lgrow"><b>С / 1 / 2 / 3 / Ф</b> — старт, ночёвки, финиш</div>
-<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · 🏨 отель Juju</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · 🏨 отель Juju · 📷 мои фото</div>
 </aside></div>
 <div class="tripsum">
   <span>🥾 <b>57,9 км</b> тропы + 3 км грунтовки</span>
@@ -850,6 +850,17 @@ ACTUAL.forEach((ln,i)=>{
   .forEach(([ll,txt])=>actualG.addLayer(L.circleMarker(ll,{radius:6,color:'#fff',weight:2,fillColor:'#e0218a',fillOpacity:1}).bindPopup('<b>'+txt+'</b>')));
 actualG.addTo(map);
 groups['Мой трек (maps.me)'] = actualG;
+
+// мои фото с GPS из EXIF; координаты, время и высота — из самих снимков
+const PHOTOS = [
+  {f:'IMG_7181', ll:[36.67494,30.46340], when:'10 окт, 09:08', ele:696,
+   cap:'Утро дня 4: вид назад на домики, где ночевали 9→10 окт'}
+];
+const photoI = icon('poiIcon','\u{1F4F7}',26,'#e0218a');
+const photosG = L.featureGroup(PHOTOS.map(ph => L.marker(ph.ll,{icon:photoI, zIndexOffset:900}).bindPopup(
+  '<a href="photos/'+ph.f+'.jpg" target="_blank"><img src="photos/'+ph.f+'_thumb.jpg" alt="'+ph.cap+'" style="width:260px;max-width:100%;border-radius:6px;display:block"></a>' +
+  '<b>'+ph.cap+'</b><br><span style="color:#6d675e">'+ph.when+' · ~'+ph.ele+' м</span>', {maxWidth:280}))).addTo(map);
+groups['Мои фото'] = photosG;
 
 L.control.layers({'Схема (OSM)':osm,'Рельеф (OpenTopoMap)':topo,'Спутник (Esri)':esri}, groups, {collapsed:true}).addTo(map);
 L.control.scale({imperial:false}).addTo(map);
