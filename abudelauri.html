@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Хевсурети: Джута → перевал Чаухи → озёра Абуделаури → Рошка → Джута</title>
+<meta name="description" content="Многодневный трек по Казбеги и Хевсурети с цветными озёрами Абуделаури: перевалы Чаухи (3338 м) и Садзеле (3060 м), гестхаусы в Джуте и Рошке, даты, логистика, найденные треки.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<style>
+  :root{
+    --d1:#e63946; --d2:#9d0208; --d3:#7b2cbf; --d4:#0077b6; --alt:#9e9e9e;
+    --ink:#26221c; --muted:#6d675e; --paper:#faf7f2; --card:#ffffff; --line:#e7e1d6;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:#0b6e99;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1560px;margin:0 auto;padding:0 32px}
+
+  header.hero{background:linear-gradient(160deg,#1d3557 0%,#2b4a75 55%,#3d6b8f 100%);color:#fff;padding:56px 0 40px}
+  header.hero h1{font-size:clamp(26px,4.5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:800}
+  header.hero p.sub{font-size:18px;opacity:.92;margin:0 0 22px;max-width:640px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+        padding:6px 14px;border-radius:999px;font-size:14px;white-space:nowrap}
+
+  nav.toc{position:sticky;top:0;z-index:1001;background:#fffdf9;border-bottom:1px solid var(--line);
+          box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+  nav.toc a{padding:12px 12px;font-size:14px;color:var(--ink);white-space:nowrap;font-weight:600}
+  nav.toc a:hover{color:var(--d1);text-decoration:none}
+
+  h2{font-size:26px;margin:48px 0 16px;font-weight:800}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin-bottom:6px}
+
+  #map{height:78vh;min-height:420px;border-radius:12px;border:1px solid var(--line);margin:8px 0 10px}
+  .map-note{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .btn{display:inline-block;background:#1d3557;color:#fff;padding:9px 18px;border-radius:8px;
+       font-weight:600;font-size:14.5px}
+  .btn:hover{background:#2b4a75;text-decoration:none}
+
+  .day{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--dc,#888);
+       border-radius:12px;padding:22px 24px;margin:20px 0}
+  .day h3{margin-top:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .day h3 .tag{font-size:12.5px;font-weight:700;color:#fff;background:var(--dc,#888);
+               padding:3px 10px;border-radius:999px;letter-spacing:.4px}
+  .day h3 .daydate{font-size:12.5px;font-weight:600;color:var(--muted);
+               border:1px solid var(--line);padding:2px 9px;border-radius:999px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;font-size:13.5px;color:var(--muted)}
+  .stat b{color:var(--ink)}
+  .sleep{background:#f4f8fb;border:1px solid #d9e6ef;border-radius:10px;padding:14px 18px;margin-top:14px}
+  .sleep h4{margin:0 0 8px;font-size:15px}
+  .sleep ul{margin-bottom:6px}
+  .coords{font-size:13px;color:var(--muted)}
+  .tip{background:#fff8e8;border:1px solid #f0e2b6;border-radius:10px;padding:12px 18px;margin-top:12px;font-size:14.5px}
+  .tip b{color:#8a6d00}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3efe7}
+  td .day-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+
+  .src-group{margin-bottom:18px}
+  .src-group h4{margin:0 0 6px;font-size:15px}
+  .src-group ul{font-size:14.5px}
+
+  footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);
+         color:var(--muted);font-size:13.5px}
+
+  .legend{background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);
+          font:12.5px/1.5 -apple-system,sans-serif;max-width:300px}
+  .legend h3{margin:0 0 6px;font-size:13.5px}
+  .sw{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .leaflet-popup-content{font:13px/1.45 -apple-system,sans-serif}
+  .nightIcon,.poiIcon,.exitIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .nightIcon{background:#1d3557}.poiIcon{background:#e9c46a;color:#333}.exitIcon{background:#6c757d}
+
+  @media (max-width:640px){
+    #map{height:60vh}
+    .day{padding:18px 16px}
+  }
+
+  .ptIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;
+          font-weight:800;font-size:14px;box-shadow:0 1px 5px rgba(0,0,0,.5);border:2.5px solid #fff}
+  .stLabel{font:600 12px/1.3 -apple-system,sans-serif !important;background:#fff;border-radius:6px;
+           box-shadow:0 1px 4px rgba(0,0,0,.35);padding:2px 8px;border:none}
+  .stLabel:before{display:none}
+  .profile{margin:4px 0 12px}
+  .profile svg{width:100%;height:auto;display:block}
+
+  .dayrow{display:grid;grid-template-columns:250px 1fr;gap:18px;margin:20px 0;align-items:stretch}
+  .dayside{min-width:0}
+  .mini{position:sticky;top:58px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px}
+  .mini svg{width:100%;height:auto;display:block}
+  .mini .cap{font:600 12.5px/1.4 -apple-system,sans-serif;color:var(--muted);text-align:center;margin-top:5px}
+  .dayrow .day{margin:0}
+  @media(max-width:760px){.dayrow{grid-template-columns:1fr}.mini{position:static;max-width:280px;margin:0 auto}}
+
+  .maprow{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;width:100%}
+  .maplegend{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.55}
+  .maplegend h3{margin:0 0 8px;font-size:15px}
+  .maplegend .lgrow{margin-bottom:4px}
+  .maplegend hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+  @media(max-width:960px){.maprow{grid-template-columns:1fr}}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0 4px}
+  .gallery figure{margin:0}
+  .gallery img{width:100%;height:190px;object-fit:cover;border-radius:10px;display:block;background:#eee}
+  .gallery figcaption{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px}
+
+  .daysum{background:#f3f8f0;border:1px solid #d5e6cf;border-radius:10px;padding:12px 18px;margin:10px 0 8px;font-size:14.5px}
+  .daysum .dsrow{margin:4px 0;display:flex;gap:8px}
+  .daysum .dsrow .ic{flex:0 0 auto}
+  .tripsum{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:14px 0;font-size:15px;display:flex;flex-wrap:wrap;gap:6px 28px}
+  .tripsum b{color:var(--ink)}
+
+  .packgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:16px 0 6px}
+  .pack{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .pack h4{margin:0 0 8px;font-size:15px}
+  .pack ul{margin:0;padding-left:20px;font-size:14.5px}
+  .pack li{margin-bottom:5px}
+  .pack li.opt{color:var(--muted)}
+  .pack.nopack{background:#faf6f0;border-style:dashed}
+
+  .warn{background:#fff4e5;border:1px solid #f3c98b;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:15px}
+  .dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0}
+  .dates .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .dates .card b.big{font-size:20px;display:block;margin:2px 0 4px}
+  .dates .card.main{border:2px solid #1d3557}
+  .approx{color:#b45309;font-weight:700}
+  .dayrow.solo{display:block}
+  .trk{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin:12px 0 8px}
+  .trk a{display:flex;flex-direction:column;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);min-height:110px}
+  .trk a:hover{border-color:#1d3557;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .trk .site{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;border-radius:6px;padding:2px 7px;align-self:flex-start}
+  .trk .t{font-weight:700;font-size:14px;line-height:1.35}
+  .trk .st{font-size:13px;color:var(--muted)}
+  .trk .u{font-size:11px;color:#8a8478;word-break:break-all;margin-top:auto}
+  .tblwrap{overflow-x:auto;max-width:100%}
+  .tblwrap table{min-width:640px}
+</style>
+</head>
+<body>
+<header class="hero" style="background:linear-gradient(160deg,#1b263b 0%,#415a77 55%,#778da9 100%)">
+  <div class="wrap">
+    <h1>Цветные озёра Абуделаури:<br>Джута → Чаухи → Рошка → Джута</h1>
+    <p class="sub">Кольцо через два перевала выше 3000 м под зубцами Чаухи — «грузинскими Доломитами»: зелёное, голубое и белое озёро Абуделаури, хевсурская деревня Рошка и возвращение в Джуту через перевал Садзеле. Ночёвки в гестхаусах, день на озёрах — налегке.</p>
+    <div class="chips"><span class="chip">🥾 4 ходовых дня</span><span class="chip">📏 ~50–60 км</span><span class="chip">⛰️ макс. ~3340 м (перевал Чаухи)</span><span class="chip">🛏 гестхаусы в Джуте и Рошке</span><span class="chip">⚠️ только для опытных: осыпь на перевале</span><span class="chip">🗓 лучшее окно: 31 июля – 6 августа 2027</span></div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap"><a href="#map-sec">Карта</a><a href="#when">Когда идти</a><a href="#plan">План по дням</a><a href="#logistics">Логистика</a><a href="#money">Деньги и бронь</a><a href="#bailouts">Запасные планы</a><a href="#tracks">Треки</a><a href="#sources">Источники</a><a href="routes.html">Все маршруты ↗</a><a href="index.html">Чиралы → Бельдиби ↗</a></div></nav>
+<main class="wrap">
+
+<h2 id="idea">Идея маршрута</h2>
+<p>Озёра Абуделаури (2600–2800 м) лежат под массивом Чаухи в Хевсурети. Самый известный способ к ним прийти — перевал Чаухи
+(3338–3341 м по разным источникам) из деревни Джута; обратно в Джуту ведёт второй перевал, Садзеле (3060 м). Это кольцо на Wikiloc
+описано как классический двухдневный поход; мы растягиваем его до четырёх ходовых дней, чтобы ночевать в гестхаусах и провести целый день на озёрах.</p>
+<p><b>Честно о сложности:</b> подъём на Чаухи — крутая осыпь из сланца (30–45 минут), спуск к озёрам один из отзывов AllTrails называет
+опасным из-за сыпучего сланца; снег на перевале лежит до июля. Это заметно серьёзнее Ликийки и Сванетии: с ребёнком — только если он уже
+уверенно ходил по крутым осыпям выше 3000 м. Мягкая альтернатива — подъехать в Рошку на машине и ходить к озёрам налегке (9,8 км по AllTrails).</p>
+
+<h2 id="when">Когда идти</h2>
+<p>Перевал Чаухи обычно открыт с <b>конца июня до начала октября</b>, безопасное окно — <b>июль–сентябрь</b>; снег на перевале может лежать до июля.
+Цвета озёр ярче всего в начале лета (июнь–июль), когда воды больше. Отсюда основное окно — начало августа: снег уже сошёл, вода ещё цветная.</p>
+<p><b>Возьмите паспорта</b> — у здания погранслужбы у Джуты документы проверяют. Еду купить негде после Джуты: в Рошке магазинов нет, гестхаусы кормят только по предварительной договорённости.</p>
+<div class="dates"><div class="card main">Основное окно<b class="big">31 июля – 6 августа 2027</b>заезд в Джуту 31 июл (сб), тропа 1–4 авг, запасной день на погоду 5 авг, выезд 6 авг.</div>
+<div class="card">Запасное окно<b class="big">4–10 сентября 2027</b>суше и спокойнее, но озёра уже менее яркие; ночью на высоте холодно.</div></div>
+
+<h2 id="map-sec">Карта маршрута</h2>
+<div class="warn"><b>Линия на карте — схема, а не GPS-трек.</b> Реальную геометрию тропы из OpenStreetMap для этого маршрута
+скачать не удалось, поэтому дни нарисованы пунктиром по ключевым точкам. Точки, координаты которых
+взяты из источников, отмечены обычными маркерами; 3 точек, поставленных по описаниям и рельефу, помечены знаком
+<span class="approx">≈</span>. Для навигации на месте скачайте трек из источников внизу (maps.me / Organic Maps / Wikiloc).</div>
+<div class="maprow"><div id="map"></div><aside class="maplegend">
+<h3>Легенда</h3>
+<div class="lgrow"><span class="sw" style="background:#9d0208"></span><b>Д2 · 2 авг, пн</b> Джута → перевал Чаухи → озёра Абуделаури → Рошка · 19–21 км</div><div class="lgrow"><span class="sw" style="background:#7b2cbf"></span><b>Д3 · 3 авг, вт</b> День на озёрах: петля Рошка → озёра Абуделаури → Рошка · ~9,8 км</div><div class="lgrow"><span class="sw" style="background:#0077b6"></span><b>Д4 · 4 авг, ср</b> Рошка → перевал Садзеле → Джута · ≈ 18–20 км</div>
+<hr>
+<div class="lgrow">пунктир — схема по ключевым точкам</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · <span class="approx">≈</span> примерное место</div>
+</aside></div>
+<div class="tripsum"><span>🥾 <b>~50–60 км</b> за 4 дня (один — налегке)</span><span>⛰ два перевала: Чаухи ~3340 м и Садзеле 3060 м</span><span>🛏 гестхаусы в Джуте и Рошке</span><span>🛂 паспорта — проверяют у Джуты</span></div>
+
+<h2 id="plan">План по дням</h2>
+<p class="map-note">Даты — для основного окна (31 июл, сб: заезд). Км и набор — по источникам; где они расходятся, дан диапазон.
+Высотные профили построены по ключевым точкам (высоты сверены с моделью рельефа SRTM), промежуточные подъёмы и спуски в них не видны.</p>
+<div class="tblwrap"><table><tr><th>День</th><th>Дата</th><th>Участок</th><th>Км</th><th>Набор / сброс</th><th>Время</th></tr>
+<tr><td><span class="day-dot" style="background:#1d3557"></span>0</td><td>31 июл, сб</td><td>Тбилиси → Степанцминда (маршрутка с Дидубе) → такси в Джуту (50–60 лари); ночь в Джуте</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><span class="day-dot" style="background:#e63946"></span>1</td><td>1 авг, вс</td><td>Джута → долина Чаухи (акклиматизация)</td><td>по желанию</td><td>—</td><td>3–5 ч налегке</td></tr><tr><td><span class="day-dot" style="background:#9d0208"></span>2</td><td>2 авг, пн</td><td>Джута → перевал Чаухи → озёра Абуделаури → Рошка</td><td>19–21 км</td><td>≈ +1400 / −1550 м</td><td>8–10 ч</td></tr><tr><td><span class="day-dot" style="background:#7b2cbf"></span>3</td><td>3 авг, вт</td><td>День на озёрах: петля Рошка → озёра Абуделаури → Рошка</td><td>~9,8 км</td><td>налегке</td><td>3,5–4 ч</td></tr><tr><td><span class="day-dot" style="background:#0077b6"></span>4</td><td>4 авг, ср</td><td>Рошка → перевал Садзеле → Джута</td><td>≈ 18–20 км</td><td>≈ +1100 / −950 м</td><td>~9 ч</td></tr></table></div>
+<div class="dayrow solo"><div class="day" style="--dc:#e63946">
+  <h3><span class="tag">ДЕНЬ 1</span> <span class="daydate">1 авг, вс</span> Джута → долина Чаухи (акклиматизация) <span class="coords">по желанию · — · 3–5 ч налегке</span></h3>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span>Радиальная прогулка без рюкзаков в долину под зубцами Чаухи (AllTrails «Juta to Chaukhi Valley Hike», 405 отзывов) — привыкнуть к высоте перед перевалом.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> ручьи в долине; в Джуте — последний магазин на весь маршрут.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед в кафе у лагеря Fifth Season или в гестхаусе.</span></div>
+  </div>
+  <p>Джута — самая высокогорная деревня района Казбеги (~2150 м). День нужен, чтобы акклиматизироваться и посмотреть на перевал, по которому завтра пойдёте.</p><div class="tip">Закупите еду на 3 дня: дальше магазинов нет.</div><div class="sleep"><h4>🛏 Ночь 1 — Джута</h4><ul><li>Гестхаусы в деревне, кемпинги Fifth Season и Zeta Camping у тропы. Цены в источниках не нашли.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#9d0208">
+  <h3><span class="tag">ДЕНЬ 2</span> <span class="daydate">2 авг, пн</span> Джута → перевал Чаухи → озёра Абуделаури → Рошка <span class="coords">19–21 км · ≈ +1400 / −1550 м · 8–10 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="124.6" x2="728" y2="124.6" stroke="#e7e1d6"/><text x="42" y="128.6" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="81.1" x2="728" y2="81.1" stroke="#e7e1d6"/><text x="42" y="85.1" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="37.7" x2="728" y2="37.7" stroke="#e7e1d6"/><text x="42" y="41.7" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,74.6 320.0,23.0 456.0,55.1 728.0,81.1 728.0,168" fill="#9d0208" opacity=".12"/><polyline points="48.0,74.6 320.0,23.0 456.0,55.1 728.0,81.1" fill="none" stroke="#9d0208" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="74.6" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="48.0" y="64.6" text-anchor="start" font-size="11" font-weight="700" fill="#9d0208">2150 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Джута · 0 км</text><circle cx="320.0" cy="23.0" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="320.0" y="13.0" text-anchor="middle" font-size="11" font-weight="700" fill="#9d0208">3338 м</text><text x="320.0" y="196" text-anchor="middle" font-size="11" fill="#6d675e">Чаухи · 8 км</text><circle cx="456.0" cy="55.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="456.0" y="45.1" text-anchor="middle" font-size="11" font-weight="700" fill="#9d0208">2600 м</text><text x="456.0" y="196" text-anchor="middle" font-size="11" fill="#6d675e">озёра · 12 км</text><circle cx="728.0" cy="81.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="728.0" y="71.1" text-anchor="end" font-size="11" font-weight="700" fill="#9d0208">2000 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Рошка · 20 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>19–21 км</b> (AllTrails 19–19,5 км, Wikiloc 20,4–21,2 км), набор около +1400 м по отзывам · самый тяжёлый день похода.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> набрать в Джуте и у последнего ручья перед верхним пастбищем — дальше до озёр воды мало; у Зелёного озера есть родник.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус на перевале; обед у Зелёного озера.</span></div>
+  </div>
+  <p>Пологий подъём по долине Чаухи сменяется крутой осыпью к перевалу. Спуск — серпантин по сланцу к трём озёрам: зелёному, голубому и белому (белое — у самого подножия Чаухи). Дальше ~6 км маркированной тропы вниз в Рошку.</p><div class="tip"><b>Выход в 7:00.</b> Направление Джута → Рошка источники советуют как более лёгкое: подъём со стороны Джуты положе. Палки обязательны.</div><div class="sleep"><h4>🛏 Ночь 2 — Рошка, ~2000 м</h4><ul><li>Два гестхауса в деревне; ужин и завтрак — только по предварительной договорённости. Связь слабая — бронировать заранее.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#7b2cbf">
+  <h3><span class="tag">ДЕНЬ 3</span> <span class="daydate">3 авг, вт</span> День на озёрах: петля Рошка → озёра Абуделаури → Рошка <span class="coords">~9,8 км · налегке · 3,5–4 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="124.6" x2="728" y2="124.6" stroke="#e7e1d6"/><text x="42" y="128.6" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="81.1" x2="728" y2="81.1" stroke="#e7e1d6"/><text x="42" y="85.1" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="37.7" x2="728" y2="37.7" stroke="#e7e1d6"/><text x="42" y="41.7" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,81.1 394.9,52.9 728.0,81.1 728.0,168" fill="#7b2cbf" opacity=".12"/><polyline points="48.0,81.1 394.9,52.9 728.0,81.1" fill="none" stroke="#7b2cbf" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="81.1" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="48.0" y="71.1" text-anchor="start" font-size="11" font-weight="700" fill="#7b2cbf">2000 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Рошка · 0 км</text><circle cx="394.9" cy="52.9" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="394.9" y="42.9" text-anchor="middle" font-size="11" font-weight="700" fill="#7b2cbf">2650 м</text><text x="394.9" y="196" text-anchor="middle" font-size="11" fill="#6d675e">озёра · 5 км</text><circle cx="728.0" cy="81.1" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="728.0" y="71.1" text-anchor="end" font-size="11" font-weight="700" fill="#7b2cbf">2000 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Рошка · 9,8 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~9,8 км, 3,5–4 ч</b> (AllTrails «Abudelauri Lakes Loop», 85 отзывов) · без рюкзаков, ко всем трём озёрам.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> родник у Зелёного озера.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> пикник у озёр; ужин в гестхаусе.</span></div>
+  </div>
+  <p>Второй раз к озёрам — уже без спешки и груза: подняться к Белому озеру у ледника, искупаться (холодно!) в Зелёном.</p><div class="tip">Если вчерашний день был слишком тяжёлым — отличный день отдыха.</div><div class="sleep"><h4>🛏 Ночь 3 — Рошка</h4><ul><li>Тот же гестхаус.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#0077b6">
+  <h3><span class="tag">ДЕНЬ 4</span> <span class="daydate">4 авг, ср</span> Рошка → перевал Садзеле → Джута <span class="coords">≈ 18–20 км · ≈ +1100 / −950 м · ~9 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="124.6" x2="728" y2="124.6" stroke="#e7e1d6"/><text x="42" y="128.6" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="81.1" x2="728" y2="81.1" stroke="#e7e1d6"/><text x="42" y="85.1" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="37.7" x2="728" y2="37.7" stroke="#e7e1d6"/><text x="42" y="41.7" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,81.1 370.1,35.1 728.0,74.6 728.0,168" fill="#0077b6" opacity=".12"/><polyline points="48.0,81.1 370.1,35.1 728.0,74.6" fill="none" stroke="#0077b6" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="81.1" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="48.0" y="71.1" text-anchor="start" font-size="11" font-weight="700" fill="#0077b6">2000 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Рошка · 0 км</text><circle cx="370.1" cy="35.1" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="370.1" y="25.1" text-anchor="middle" font-size="11" font-weight="700" fill="#0077b6">3060 м</text><text x="370.1" y="196" text-anchor="middle" font-size="11" fill="#6d675e">Садзеле · 9 км</text><circle cx="728.0" cy="74.6" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="728.0" y="64.6" text-anchor="end" font-size="11" font-weight="700" fill="#0077b6">2150 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Джута · 19 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~9 ч</b> по треку Wikiloc (второй день кольца) · км и набор — оценка по высотам точек.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> ручьи в долине Рошки и в долинах Вешатцкали и Джуты.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус на перевале; ужин в Джуте.</span></div>
+  </div>
+  <p>Через долину Рошки — на перевал Садзеле и вниз по долинам Вешатцкали и Джуты. Садзеле ниже Чаухи, но со стороны Рошки подъём, по отзывам, тяжелее.</p><div class="tip"><b>Запасной вариант:</b> хозяева гестхауса в Рошке отвезут до Барисахо (~150 лари) или Тбилиси (~350 лари) — общественного транспорта нет.</div><div class="sleep"><h4>🛏 Ночь 4 — Джута</h4><ul><li>Гестхаус или кемпинг.</li></ul></div>
+</div></div>
+
+<h2 id="logistics">Логистика</h2>
+<h3>Туда</h3><ul>
+<li><b>Тбилиси → Степанцминда</b> — маршрутки с автовокзала Дидубе; <b>Степанцминда → Джута</b> — такси от 60 лари в одну сторону или общая машина ~50 лари (17 км, пешком ~4 ч).</li></ul>
+<h3>Обратно</h3><ul><li>Кольцо возвращает в Джуту → такси в Степанцминду → маршрутка в Тбилиси.</li>
+<li>Если заканчиваете в Рошке: только машина хозяев — до Барисахо ~150 лари, до Тбилиси ~350 лари; старый автобус Тбилиси (Дидубе) → Барисахо в 17:00 — уточнять.</li></ul>
+
+<h2 id="money">Деньги и бронирование</h2>
+<ul><li><b>Транспорт:</b> такси Степанцминда → Джута 50–60 лари; трансфер из Рошки 150–350 лари.</li>
+<li><b>Жильё</b> в Джуте и Рошке — цены в источниках не нашли; ориентир по горной Грузии — 70–100 лари с человека с ужином и завтраком (как в Сванетии).</li>
+<li>Разрешений не нужно, но паспорта с собой.</li></ul>
+
+<h2 id="bailouts">Запасные планы</h2>
+<ul><li><b>До перевала Чаухи</b> — вернуться в Джуту.</li>
+<li><b>Рошка</b> — машина хозяев до Барисахо / Тбилиси.</li>
+<li><b>Снег или туман на перевале</b> — не идти: спуск по сыпучему сланцу опасен; Рошку и озёра можно посетить с хевсурской стороны на машине.</li></ul>
+
+<h2 id="tracks">Найденные треки (20)</h2><p class="map-note">Реальные записи и описания маршрута на Wikiloc, AllTrails, Outdooractive и komoot — найдены поиском, чтобы каждый день плана можно было проверить чужими GPS-треками. Цифры на карточке — из описания трека (там, где поиск их показал); у разных треков они расходятся.</p><div class="trk"><a href="https://www.wikiloc.com/hiking-trails/2-day-loop-juta-chaukhi-pass-abudelauri-lakes-roshka-sadzele-pass-back-to-juta-kazbegi-national-par-107281532" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">2-day loop: Juta – Chaukhi pass – Abudelauri lakes – Roshka – Sadzele pass – Juta</span><span class="st">Чаухи 3341 м, Садзеле 3060 м</span><span class="u">www.wikiloc.com/hiking-trails/2-day-loop-juta-chaukhi-pass-abudelauri-</span></a><a href="https://www.wikiloc.com/hiking-trails/circular-trail-between-juta-and-abudelauri-lakes-via-chaukhi-and-sadzele-passes-41436555" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Circular trail Juta – Abudelauri lakes via Chaukhi and Sadzele passes</span><span class="st">день 1 ~7,5 ч · день 2 ~9 ч</span><span class="u">www.wikiloc.com/hiking-trails/circular-trail-between-juta-and-abudelau</span></a><a href="https://www.wikiloc.com/hiking-trails/juta-to-roshka-via-chaukhi-pass-8735510" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Juta to Roshka via Chaukhi pass</span><span class="st">~20–21 км</span><span class="u">www.wikiloc.com/hiking-trails/juta-to-roshka-via-chaukhi-pass-8735510</span></a><a href="https://www.wikiloc.com/hiking-trails/juta-roshka-107757740" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Juta – Roshka</span><span class="u">www.wikiloc.com/hiking-trails/juta-roshka-107757740</span></a><a href="https://www.wikiloc.com/hiking-trails/juta-abudelauri-lakes-trekking-21544058" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Juta – Abudelauri lakes trekking</span><span class="u">www.wikiloc.com/hiking-trails/juta-abudelauri-lakes-trekking-21544058</span></a><a href="https://www.wikiloc.com/hiking-trails/one-day-hike-from-juta-to-the-abudelauri-lakes-and-back-142605644" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">One-day hike from Juta to the Abudelauri lakes and back</span><span class="st">~9,5 ч в движении</span><span class="u">www.wikiloc.com/hiking-trails/one-day-hike-from-juta-to-the-abudelauri</span></a><a href="https://www.wikiloc.com/hiking-trails/abudelauri-lakes-chaukhi-mountains-georgia-194375244" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Abudelauri lakes – Chaukhi mountains</span><span class="u">www.wikiloc.com/hiking-trails/abudelauri-lakes-chaukhi-mountains-georg</span></a><a href="https://www.wikiloc.com/hiking-trails/juta-chaukhi-pass-79991868" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Juta – Chaukhi pass (петля от Fifth Season)</span><span class="st">15,3 км · +968 м</span><span class="u">www.wikiloc.com/hiking-trails/juta-chaukhi-pass-79991868</span></a><a href="https://www.wikiloc.com/waypoints/cXksTU/chaukhi-pass" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Перевал Чаухи — все треки через точку</span><span class="u">www.wikiloc.com/waypoints/cXksTU/chaukhi-pass</span></a><a href="https://www.wikiloc.com/trails/hiking/georgia/mtskheta-mtianeti/roshka" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Лучшие треки вокруг Рошки</span><span class="u">www.wikiloc.com/trails/hiking/georgia/mtskheta-mtianeti/roshka</span></a><a href="https://www.wikiloc.com/trails/hiking/georgia/poti/juta" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Лучшие треки вокруг Джуты</span><span class="u">www.wikiloc.com/trails/hiking/georgia/poti/juta</span></a><a href="https://www.alltrails.com/trail/georgia/mtskheta-mtianeti/roshka-to-juta-via-chaukhi-pass" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Roshka to Juta via Chaukhi Pass</span><span class="st">~19 км · сложный · 18 отзывов</span><span class="u">www.alltrails.com/trail/georgia/mtskheta-mtianeti/roshka-to-juta-via-c</span></a><a href="https://www.alltrails.com/trail/georgia/mtskheta-mtianeti/chaukhi-valley-hike" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Juta to Chaukhi Valley Hike</span><span class="st">405 отзывов</span><span class="u">www.alltrails.com/trail/georgia/mtskheta-mtianeti/chaukhi-valley-hike</span></a><a href="https://www.alltrails.com/trail/georgia/mtskheta-mtianeti/juta-to-chauki-pass" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Juta to Chauki Pass</span><span class="st">52 отзыва</span><span class="u">www.alltrails.com/trail/georgia/mtskheta-mtianeti/juta-to-chauki-pass</span></a><a href="https://www.alltrails.com/trail/georgia/mtskheta-mtianeti/abudelauri-lakes-loop" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Abudelauri Lakes Loop (из Рошки)</span><span class="st">9,8 км · 3,5–4 ч · 85 отзывов</span><span class="u">www.alltrails.com/trail/georgia/mtskheta-mtianeti/abudelauri-lakes-loo</span></a><a href="https://www.alltrails.com/georgia/mtskheta-mtianeti/roshka" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Лучшие треки вокруг Рошки</span><span class="u">www.alltrails.com/georgia/mtskheta-mtianeti/roshka</span></a><a href="https://www.alltrails.com/georgia/mtskheta-mtianeti/juta--2" target="_blank" rel="noopener"><span class="site" style="background:#2c5e2e">AllTrails</span><span class="t">Лучшие треки вокруг Джуты</span><span class="u">www.alltrails.com/georgia/mtskheta-mtianeti/juta--2</span></a><a href="https://www.komoot.com/smarttour/20156367" target="_blank" rel="noopener"><span class="site" style="background:#6aa127">komoot</span><span class="t">Juta → Abudelauri → Roshka (smarttour)</span><span class="u">www.komoot.com/smarttour/20156367</span></a><a href="https://www.caucasus-trekking.com/treks/chaukhi" target="_blank" rel="noopener"><span class="site" style="background:#555">Caucasus Trekking</span><span class="t">From Juta to Roshka via Chaukhi pass — описание и GPX</span><span class="u">www.caucasus-trekking.com/treks/chaukhi</span></a><a href="https://www.goingthewholehogg.com/juta-to-roshka-via-chaukhi-pass/" target="_blank" rel="noopener"><span class="site" style="background:#555">Going the Whole Hogg</span><span class="t">Juta to Roshka (via Chaukhi Pass) hiking guide</span><span class="u">www.goingthewholehogg.com/juta-to-roshka-via-chaukhi-pass/</span></a></div>
+<h2 id="sources">Источники (11)</h2>
+<div class="src-group"><h4>Маршрут</h4><ul><li><a href="https://www.caucasus-trekking.com/treks/chaukhi" target="_blank">Caucasus Trekking — From Juta to Roshka via Chaukhi pass</a></li><li><a href="https://www.goingthewholehogg.com/juta-to-roshka-via-chaukhi-pass/" target="_blank">Going the Whole Hogg — Juta to Roshka hiking guide</a></li><li><a href="https://thegeorgianguide.com/hiking/juta-chaukhi-pass-trek/" target="_blank">The Georgian Guide — Juta to Roshka: route, costs, transport</a></li><li><a href="https://www.packing-up-the-pieces.com/juta-roshka-2-day-trek/" target="_blank">Packing up the Pieces — Juta to Roshka 2-day loop</a></li><li><a href="https://gamarjobageorgiatours.com/abudelauri-lakes/" target="_blank">Gamarjoba Georgia Tours — Abudelauri lakes guide 2026</a></li><li><a href="https://hikingmax.com/en/routes/roshka-juta" target="_blank">Hiking Max — Roshka to Juta</a></li><li><a href="https://georgiantour.com/abudelaurebi/" target="_blank">Georgian Tour Adviser — Abudelauri &amp; Juta–Roshka</a></li></ul></div><div class="src-group"><h4>Русскоязычные отчёты</h4><ul><li><a href="https://luchar.livejournal.com/247371.html" target="_blank">luchar — К Абуделаурским озёрам</a></li><li><a href="https://onmymind.ge/abudelaurskie-ozera" target="_blank">onmymind.ge — двухдневный поход к озёрам Абуделаури</a></li><li><a href="https://podalshe.com/roshka-juta" target="_blank">Подальше — перевал Чаухи</a></li><li><a href="https://goodway.club/hiking/tusheti-hevsureti-kazbegi/" target="_blank">goodway.club — поход Казбеги → Хевсурети → Тушети</a></li></ul></div>
+</main>
+<footer><div class="wrap"><p>Маршрут собран в октябре 2026 по 11 источникам (ссылки выше); цифры из разных источников часто расходятся —
+перед поездкой перепроверьте даты работы, цены и телефоны напрямую. Высоты точек сверены с моделью рельефа SRTM
+(данные NASA, через AWS Terrain Tiles). Карта: Leaflet + OpenStreetMap / OpenTopoMap / Esri.</p></div></footer>
+<script>
+const LINES=[{"day": 2, "color": "#9d0208", "label": "День 2 · 2 авг, пн · Джута → перевал Чаухи → озёра Абуделаури → Рошка · 19–21 км", "segs": [{"real": false, "ll": [[42.577, 44.744], [42.542, 44.812], [42.5443, 44.8373], [42.5429, 44.8967]]}]}, {"day": 3, "color": "#7b2cbf", "label": "День 3 · 3 авг, вт · День на озёрах: петля Рошка → озёра Абуделаури → Рошка · ~9,8 км", "segs": [{"real": false, "ll": [[42.5429, 44.8967], [42.5443, 44.8373], [42.5429, 44.8967]]}]}, {"day": 4, "color": "#0077b6", "label": "День 4 · 4 авг, ср · Рошка → перевал Садзеле → Джута · ≈ 18–20 км", "segs": [{"real": false, "ll": [[42.5429, 44.8967], [42.57, 44.819], [42.577, 44.744]]}]}];
+const MARKS=[{"ll": [42.577, 44.744], "name": "Джута", "approx": true, "ele": 2150, "srtm": 2152, "mark": "С", "color": "#1d3557", "note": "ночи 0, 1 и 4; гестхаусы, Fifth Season, Zeta Camping", "kind": "stage"}, {"ll": [42.542, 44.812], "name": "перевал Чаухи", "approx": true, "ele": 3338, "srtm": 3338, "mark": null, "color": "#1d3557", "note": "3338–3341 м; крутая сланцевая осыпь", "kind": "poi"}, {"ll": [42.5443, 44.8373], "name": "озёра Абуделаури", "approx": false, "ele": 2600, "srtm": 2578, "mark": null, "color": "#1d3557", "note": "зелёное, голубое, белое; 2600–2800 м", "kind": "poi"}, {"ll": [42.5429, 44.8967], "name": "Рошка", "approx": false, "ele": 2000, "srtm": 1999, "mark": "2", "color": "#9d0208", "note": "ночи 2 и 3; гестхаусы, магазинов нет", "kind": "stage"}, {"ll": [42.57, 44.819], "name": "перевал Садзеле", "approx": true, "ele": 3060, "srtm": 3060, "mark": null, "color": "#1d3557", "note": "3060 м; со стороны Рошки подъём тяжелее", "kind": "poi"}];
+const map=L.map('map',{preferCanvas:true});
+const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'});
+const topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'&copy; OpenStreetMap, SRTM | OpenTopoMap (CC-BY-SA)'});
+const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'&copy; Esri World Imagery'});
+topo.addTo(map);
+let bounds=null; const groups={};
+LINES.forEach(d=>{
+  const g=L.featureGroup();
+  d.segs.forEach(s=>g.addLayer(L.polyline(s.ll,s.real?{color:d.color,weight:5,opacity:.92}:{color:d.color,weight:4,opacity:.9,dashArray:'8 7'}).bindPopup('<b>'+d.label+'</b>'+(s.real?'<br>реальная тропа (OSM)':'<br>схема по ключевым точкам'))));
+  g.addTo(map); groups['День '+d.day]=g;
+  bounds=bounds?bounds.extend(g.getBounds()):g.getBounds();
+});
+function icon(cls,txt,size,bg){return L.divIcon({className:'',html:'<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;background:'+bg+'">'+txt+'</div>',iconSize:[size,size],iconAnchor:[size/2,size/2],popupAnchor:[0,-size/2]});}
+MARKS.forEach(m=>{
+  const ap=m.approx?' <span class="approx">≈</span>':'';
+  const pop='<b>'+m.name+'</b>'+ap+'<br>'+m.ele+' м'+(m.approx?'<br><i>место примерное</i>':'')+(m.note?'<br>'+m.note:'');
+  let ic;
+  if(m.kind==='poi') ic=icon('poiIcon','⭐',24,'#e9c46a');
+  else if(m.kind==='exit') ic=icon('exitIcon','\u{1F695}',24,'#6c757d');
+  else ic=icon('ptIcon',m.mark||'•',28,m.color);
+  const mk=L.marker(m.ll,{icon:ic,zIndexOffset:m.kind==='stage'?1000:0}).bindPopup(pop,{maxWidth:300});
+  if(m.kind==='stage') mk.bindTooltip(m.name+(m.approx?' ≈':''),{permanent:true,direction:'right',offset:[16,0],className:'stLabel'});
+  mk.addTo(map);
+});
+map.fitBounds(bounds.pad(0.08));
+L.control.layers({'Рельеф (OpenTopoMap)':topo,'Схема (OSM)':osm,'Спутник (Esri)':esri},groups,{collapsed:true}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+</script>
+</body>
+</html>

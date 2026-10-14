@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Горный Дагестан пешком: Гамсутль → Чох → Гуниб → Карадахская теснина</title>
+<meta name="description" content="Участок Большой Кавказской тропы по горному Дагестану: Салтинский водопад, аул-призрак Гамсутль, Чох, Гунибское плато и Карадахская теснина. Ночёвки в гостевых домах, даты, логистика, найденные треки и описания.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<style>
+  :root{
+    --d1:#e63946; --d2:#9d0208; --d3:#7b2cbf; --d4:#0077b6; --alt:#9e9e9e;
+    --ink:#26221c; --muted:#6d675e; --paper:#faf7f2; --card:#ffffff; --line:#e7e1d6;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:#0b6e99;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1560px;margin:0 auto;padding:0 32px}
+
+  header.hero{background:linear-gradient(160deg,#1d3557 0%,#2b4a75 55%,#3d6b8f 100%);color:#fff;padding:56px 0 40px}
+  header.hero h1{font-size:clamp(26px,4.5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:800}
+  header.hero p.sub{font-size:18px;opacity:.92;margin:0 0 22px;max-width:640px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+        padding:6px 14px;border-radius:999px;font-size:14px;white-space:nowrap}
+
+  nav.toc{position:sticky;top:0;z-index:1001;background:#fffdf9;border-bottom:1px solid var(--line);
+          box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+  nav.toc a{padding:12px 12px;font-size:14px;color:var(--ink);white-space:nowrap;font-weight:600}
+  nav.toc a:hover{color:var(--d1);text-decoration:none}
+
+  h2{font-size:26px;margin:48px 0 16px;font-weight:800}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin-bottom:6px}
+
+  #map{height:78vh;min-height:420px;border-radius:12px;border:1px solid var(--line);margin:8px 0 10px}
+  .map-note{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .btn{display:inline-block;background:#1d3557;color:#fff;padding:9px 18px;border-radius:8px;
+       font-weight:600;font-size:14.5px}
+  .btn:hover{background:#2b4a75;text-decoration:none}
+
+  .day{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--dc,#888);
+       border-radius:12px;padding:22px 24px;margin:20px 0}
+  .day h3{margin-top:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .day h3 .tag{font-size:12.5px;font-weight:700;color:#fff;background:var(--dc,#888);
+               padding:3px 10px;border-radius:999px;letter-spacing:.4px}
+  .day h3 .daydate{font-size:12.5px;font-weight:600;color:var(--muted);
+               border:1px solid var(--line);padding:2px 9px;border-radius:999px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;font-size:13.5px;color:var(--muted)}
+  .stat b{color:var(--ink)}
+  .sleep{background:#f4f8fb;border:1px solid #d9e6ef;border-radius:10px;padding:14px 18px;margin-top:14px}
+  .sleep h4{margin:0 0 8px;font-size:15px}
+  .sleep ul{margin-bottom:6px}
+  .coords{font-size:13px;color:var(--muted)}
+  .tip{background:#fff8e8;border:1px solid #f0e2b6;border-radius:10px;padding:12px 18px;margin-top:12px;font-size:14.5px}
+  .tip b{color:#8a6d00}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3efe7}
+  td .day-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+
+  .src-group{margin-bottom:18px}
+  .src-group h4{margin:0 0 6px;font-size:15px}
+  .src-group ul{font-size:14.5px}
+
+  footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);
+         color:var(--muted);font-size:13.5px}
+
+  .legend{background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);
+          font:12.5px/1.5 -apple-system,sans-serif;max-width:300px}
+  .legend h3{margin:0 0 6px;font-size:13.5px}
+  .sw{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .leaflet-popup-content{font:13px/1.45 -apple-system,sans-serif}
+  .nightIcon,.poiIcon,.exitIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .nightIcon{background:#1d3557}.poiIcon{background:#e9c46a;color:#333}.exitIcon{background:#6c757d}
+
+  @media (max-width:640px){
+    #map{height:60vh}
+    .day{padding:18px 16px}
+  }
+
+  .ptIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;
+          font-weight:800;font-size:14px;box-shadow:0 1px 5px rgba(0,0,0,.5);border:2.5px solid #fff}
+  .stLabel{font:600 12px/1.3 -apple-system,sans-serif !important;background:#fff;border-radius:6px;
+           box-shadow:0 1px 4px rgba(0,0,0,.35);padding:2px 8px;border:none}
+  .stLabel:before{display:none}
+  .profile{margin:4px 0 12px}
+  .profile svg{width:100%;height:auto;display:block}
+
+  .dayrow{display:grid;grid-template-columns:250px 1fr;gap:18px;margin:20px 0;align-items:stretch}
+  .dayside{min-width:0}
+  .mini{position:sticky;top:58px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px}
+  .mini svg{width:100%;height:auto;display:block}
+  .mini .cap{font:600 12.5px/1.4 -apple-system,sans-serif;color:var(--muted);text-align:center;margin-top:5px}
+  .dayrow .day{margin:0}
+  @media(max-width:760px){.dayrow{grid-template-columns:1fr}.mini{position:static;max-width:280px;margin:0 auto}}
+
+  .maprow{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;width:100%}
+  .maplegend{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.55}
+  .maplegend h3{margin:0 0 8px;font-size:15px}
+  .maplegend .lgrow{margin-bottom:4px}
+  .maplegend hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+  @media(max-width:960px){.maprow{grid-template-columns:1fr}}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0 4px}
+  .gallery figure{margin:0}
+  .gallery img{width:100%;height:190px;object-fit:cover;border-radius:10px;display:block;background:#eee}
+  .gallery figcaption{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px}
+
+  .daysum{background:#f3f8f0;border:1px solid #d5e6cf;border-radius:10px;padding:12px 18px;margin:10px 0 8px;font-size:14.5px}
+  .daysum .dsrow{margin:4px 0;display:flex;gap:8px}
+  .daysum .dsrow .ic{flex:0 0 auto}
+  .tripsum{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:14px 0;font-size:15px;display:flex;flex-wrap:wrap;gap:6px 28px}
+  .tripsum b{color:var(--ink)}
+
+  .packgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:16px 0 6px}
+  .pack{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .pack h4{margin:0 0 8px;font-size:15px}
+  .pack ul{margin:0;padding-left:20px;font-size:14.5px}
+  .pack li{margin-bottom:5px}
+  .pack li.opt{color:var(--muted)}
+  .pack.nopack{background:#faf6f0;border-style:dashed}
+
+  .warn{background:#fff4e5;border:1px solid #f3c98b;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:15px}
+  .dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0}
+  .dates .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .dates .card b.big{font-size:20px;display:block;margin:2px 0 4px}
+  .dates .card.main{border:2px solid #1d3557}
+  .approx{color:#b45309;font-weight:700}
+  .dayrow.solo{display:block}
+  .trk{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin:12px 0 8px}
+  .trk a{display:flex;flex-direction:column;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);min-height:110px}
+  .trk a:hover{border-color:#1d3557;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .trk .site{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;border-radius:6px;padding:2px 7px;align-self:flex-start}
+  .trk .t{font-weight:700;font-size:14px;line-height:1.35}
+  .trk .st{font-size:13px;color:var(--muted)}
+  .trk .u{font-size:11px;color:#8a8478;word-break:break-all;margin-top:auto}
+  .tblwrap{overflow-x:auto;max-width:100%}
+  .tblwrap table{min-width:640px}
+</style>
+</head>
+<body>
+<header class="hero" style="background:linear-gradient(160deg,#6a040f 0%,#9d0208 50%,#dc2f02 100%)">
+  <div class="wrap">
+    <h1>Горный Дагестан пешком:<br>Гамсутль → Чох → Гуниб → Карадах</h1>
+    <p class="sub">Участок Большой Кавказской тропы: подземный Салтинский водопад, аул-призрак Гамсутль на скале, террасы Чоха, Гунибская крепость и узкая Карадахская теснина. Ночёвки в гостевых домах «от дома к дому».</p>
+    <div class="chips"><span class="chip">🥾 5 ходовых дней</span><span class="chip">📏 ~45–55 км пешком</span><span class="chip">⛰️ ~1000–2000 м, без перевалов</span><span class="chip">🛏 гостевые дома в аулах</span><span class="chip">👨‍👩‍👧 3–17 км/день</span><span class="chip">🗓 лучшее окно: 7–13 мая 2027</span></div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap"><a href="#map-sec">Карта</a><a href="#when">Когда идти</a><a href="#plan">План по дням</a><a href="#logistics">Логистика</a><a href="#money">Деньги и бронь</a><a href="#bailouts">Запасные планы</a><a href="#tracks">Треки</a><a href="#sources">Источники</a><a href="routes.html">Все маршруты ↗</a><a href="index.html">Чиралы → Бельдиби ↗</a></div></nav>
+<main class="wrap">
+
+<h2 id="idea">Идея маршрута</h2>
+<p>В Дагестане проект «Кавказская тропа» прокладывает маршруты «от дома к дому»: по данным портала Кавказ.РФ, уже есть более 50 треков,
+из них 7 — вокруг аула Чох, где можно поесть, переночевать, взять лошадей или гида. Самый известный кусок — Гамсутль → Чох → Гуниб → Карадахская
+теснина: у vpoxod.ru это 7-дневный поход с ~55 км пешком, у других организаторов — программы «Тропой императора» с ночёвками в Гунибе и Гоцатле.</p>
+<p><b>Честно о «доказанности»:</b> в отличие от Ликийки, Сванетии и Доломитов, готовых линейных GPS-треков по этому участку в открытом доступе мало —
+поиск находит отдельные треки (Гамсутль, Верхний Гуниб → Карадах) и программы походов. План ниже собран из них; внизу — все найденные треки и описания.
+Перед поездкой стоит взять GPX у «Кавказской тропы» (caucasiantrail.ru) или местного гида.</p>
+
+<h2 id="when">Когда идти</h2>
+<p>Салтинский подземный водопад сильнее всего весной, летом он часто пересыхает. Поэтому основное окно — май; запасное — сентябрь–октябрь.
+Летом в низинах (Карадах, Салта) жарко, а узкую Карадахскую теснину опасно проходить в дождь.</p>
+<p><b>Жильё в Гунибе</b> гиды советуют бронировать заранее, особенно в сезон.</p>
+<div class="dates"><div class="card main">Основное окно<b class="big">7–13 мая 2027</b>прилёт 7 мая (пт), тропа 8–12 мая, выезд 13 мая. Водопад полноводный, зелень.</div>
+<div class="card">Запасное окно<b class="big">17–23 сентября 2027</b>сухо и не жарко; водопад слабее.</div></div>
+
+<h2 id="map-sec">Карта маршрута</h2>
+<div class="warn"><b>Линия на карте — схема, а не GPS-трек.</b> Реальную геометрию тропы из OpenStreetMap для этого маршрута
+скачать не удалось, поэтому дни нарисованы пунктиром по ключевым точкам. Точки, координаты которых
+взяты из источников, отмечены обычными маркерами; 3 точек, поставленных по описаниям и рельефу, помечены знаком
+<span class="approx">≈</span>. Для навигации на месте скачайте трек из источников внизу (maps.me / Organic Maps / Wikiloc).</div>
+<div class="maprow"><div id="map"></div><aside class="maplegend">
+<h3>Легенда</h3>
+<div class="lgrow"><span class="sw" style="background:#e63946"></span><b>Д1 · 8 мая, сб</b> Салтинский водопад → переезд к Чоху · ~3 км</div><div class="lgrow"><span class="sw" style="background:#9d0208"></span><b>Д2 · 9 мая, вс</b> Чох → аул-призрак Гамсутль → Чох · ~6,5–9 км</div><div class="lgrow"><span class="sw" style="background:#7b2cbf"></span><b>Д3 · 10 мая, пн</b> Чох → Кегерское плато → Гуниб · ~10–18 км</div><div class="lgrow"><span class="sw" style="background:#2a9d8f"></span><b>Д5 · 12 мая, ср</b> Верхний Гуниб → Карадахская теснина · ~16,7 км</div>
+<hr>
+<div class="lgrow">пунктир — схема по ключевым точкам</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · <span class="approx">≈</span> примерное место</div>
+</aside></div>
+<div class="tripsum"><span>🥾 <b>~45–55 км</b> пешком за 5 дней (vpoxod: ~55 км)</span><span>⛰ высоты ~1000–2000 м (по модели рельефа), без перевалов</span><span>🛏 гостевые дома в Чохе и Гунибе</span><span>🚗 переезды между точками — на машине</span></div>
+
+<h2 id="plan">План по дням</h2>
+<p class="map-note">Даты — для основного окна (7 мая, пт: заезд). Км и набор — по источникам; где они расходятся, дан диапазон.
+Высотные профили построены по ключевым точкам (высоты сверены с моделью рельефа SRTM), промежуточные подъёмы и спуски в них не видны.</p>
+<div class="tblwrap"><table><tr><th>День</th><th>Дата</th><th>Участок</th><th>Км</th><th>Набор / сброс</th><th>Время</th></tr>
+<tr><td><span class="day-dot" style="background:#1d3557"></span>0</td><td>7 мая, пт</td><td>Перелёт в Махачкалу → машина в Гунибский район (~170 км, 3–4 ч); ночь в гостевом доме у Чоха</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><span class="day-dot" style="background:#e63946"></span>1</td><td>8 мая, сб</td><td>Салтинский водопад → переезд к Чоху</td><td>~3 км</td><td>≈ +65 м</td><td>1,5 ч</td></tr><tr><td><span class="day-dot" style="background:#9d0208"></span>2</td><td>9 мая, вс</td><td>Чох → аул-призрак Гамсутль → Чох</td><td>~6,5–9 км</td><td>+400…600 м</td><td>3–4 ч</td></tr><tr><td><span class="day-dot" style="background:#7b2cbf"></span>3</td><td>10 мая, пн</td><td>Чох → Кегерское плато → Гуниб</td><td>~10–18 км</td><td>+350 / −550 м</td><td>5–7 ч</td></tr><tr><td><span class="day-dot" style="background:#0077b6"></span>4</td><td>11 мая, вт</td><td>Гуниб: крепость, Верхний Гуниб и гора Маяк</td><td>~10–20 км</td><td>до +750 м</td><td>4–7 ч налегке</td></tr><tr><td><span class="day-dot" style="background:#2a9d8f"></span>5</td><td>12 мая, ср</td><td>Верхний Гуниб → Карадахская теснина</td><td>~16,7 км</td><td>+546 / ≈ −900 м</td><td>6–7 ч</td></tr></table></div>
+<div class="dayrow solo"><div class="day" style="--dc:#e63946">
+  <h3><span class="tag">ДЕНЬ 1</span> <span class="daydate">8 мая, сб</span> Салтинский водопад → переезд к Чоху <span class="coords">~3 км · ≈ +65 м · 1,5 ч</span></h3>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~2,7 км туда-обратно, +65 м</b> (трек Wikiloc «Салтинский водопад», лёгкий) · прогулка по ущелью к подземному водопаду и переезд к Чоху.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> в Салте и в Чохе.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед в Чохе.</span></div>
+  </div>
+  <p>Ущелье длиной около километра сужается к гроту, где под сводом скалы падает вода. Вода ледяная; весной поток самый мощный.</p><div class="tip">Резиновая обувь или сандалии — по ручью.</div><div class="sleep"><h4>🛏 Ночь 1 — Чох</h4><ul><li>Гостевые дома в ауле (по Кавказ.РФ). Цены в источниках не нашли — бронировать через «Кавказскую тропу» или гидов.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#9d0208">
+  <h3><span class="tag">ДЕНЬ 2</span> <span class="daydate">9 мая, вс</span> Чох → аул-призрак Гамсутль → Чох <span class="coords">~6,5–9 км · +400…600 м · 3–4 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="130.0" x2="728" y2="130.0" stroke="#e7e1d6"/><text x="42" y="134.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="54.0" x2="728" y2="54.0" stroke="#e7e1d6"/><text x="42" y="58.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><polygon points="48.0,168 48.0,49.1 388.0,41.1 728.0,49.1 728.0,168" fill="#9d0208" opacity=".12"/><polyline points="48.0,49.1 388.0,41.1 728.0,49.1" fill="none" stroke="#9d0208" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="49.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="48.0" y="39.1" text-anchor="start" font-size="11" font-weight="700" fill="#9d0208">1565 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Чох · 0 км</text><circle cx="388.0" cy="41.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="388.0" y="31.1" text-anchor="middle" font-size="11" font-weight="700" fill="#9d0208">1670 м</text><text x="388.0" y="196" text-anchor="middle" font-size="11" fill="#6d675e">Гамсутль · 4 км</text><circle cx="728.0" cy="49.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="728.0" y="39.1" text-anchor="end" font-size="11" font-weight="700" fill="#9d0208">1565 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Чох · 8 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~6,5 км петля, ~2 ч 20 мин</b> (komoot, самый популярный маршрут Дагестана); треки Wikiloc 2,3–9 км, набор 400–600 м · от моста у Чоха пешком 2–4,5 км.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> родники по пути (уточнять); в Чохе всё есть.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> пикник в Гамсутле.</span></div>
+  </div>
+  <p>Гамсутль — опустевший аул на скальном останце, которому, по описаниям, около 6000 лет. Часть подъёма можно проехать на «уазике» (~100 ₽) или верхом (~1000 ₽).</p><div class="tip">Подъём каменистый, через берёзово-сосновый лес — удобная обувь и палки.</div><div class="sleep"><h4>🛏 Ночь 2 — Чох</h4><ul><li>Тот же гостевой дом.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#7b2cbf">
+  <h3><span class="tag">ДЕНЬ 3</span> <span class="daydate">10 мая, пн</span> Чох → Кегерское плато → Гуниб <span class="coords">~10–18 км · +350 / −550 м · 5–7 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="130.0" x2="728" y2="130.0" stroke="#e7e1d6"/><text x="42" y="134.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="54.0" x2="728" y2="54.0" stroke="#e7e1d6"/><text x="42" y="58.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><polygon points="48.0,168 48.0,49.1 388.0,23.6 728.0,54.0 728.0,168" fill="#7b2cbf" opacity=".12"/><polyline points="48.0,49.1 388.0,23.6 728.0,54.0" fill="none" stroke="#7b2cbf" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="49.1" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="48.0" y="39.1" text-anchor="start" font-size="11" font-weight="700" fill="#7b2cbf">1565 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Чох · 0 км</text><circle cx="388.0" cy="23.6" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="388.0" y="13.6" text-anchor="middle" font-size="11" font-weight="700" fill="#7b2cbf">1900 м</text><text x="388.0" y="196" text-anchor="middle" font-size="11" fill="#6d675e">плато · 6 км</text><circle cx="728.0" cy="54.0" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="728.0" y="44.0" text-anchor="end" font-size="11" font-weight="700" fill="#7b2cbf">1500 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Гуниб · 12 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~10 км, +350/−550 м</b> с рюкзаками по программе «Большой Кавказской тропы»; у vpoxod этот переход разбит на 2 дня (спуск к Гунибу — 8 км, ±400 м).</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> нести с собой; в Гунибе всё есть.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед на плато с видом на Гунибскую гору («точка Айвазовского»).</span></div>
+  </div>
+  <p>Через плато в сторону посёлка Кегер — к Гунибу, последней крепости имама Шамиля. По дороге — «точка Айвазовского», откуда художник рисовал аул Чох.</p><div class="tip">Самый «походный» день — с рюкзаками.</div><div class="sleep"><h4>🛏 Ночь 3 — Гуниб</h4><ul><li>Гостевые дома с комнатами на 2–4 человека, удобства на этаже (по описанию тура). Бронировать заранее.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#0077b6">
+  <h3><span class="tag">ДЕНЬ 4</span> <span class="daydate">11 мая, вт</span> Гуниб: крепость, Верхний Гуниб и гора Маяк <span class="coords">~10–20 км · до +750 м · 4–7 ч налегке</span></h3>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span>Налегке: Гунибская крепость, берёзовая роща Верхнего Гуниба, водопад и гора Маяк (komoot: петли 10,1 и 21,1 км; у организаторов — перепад до 750 м).</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> в Гунибе.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед в Гунибе.</span></div>
+  </div>
+  <p>Гунибское плато — природный парк: здесь в 1859 году закончилась Кавказская война, отсюда и название «Тропа императора» (по ней поднимался Александр II).</p><div class="tip">Можно сократить до крепости и рощи (~5 км, +200 м).</div><div class="sleep"><h4>🛏 Ночь 4 — Гуниб</h4><ul><li>Тот же гостевой дом.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#2a9d8f">
+  <h3><span class="tag">ДЕНЬ 5</span> <span class="daydate">12 мая, ср</span> Верхний Гуниб → Карадахская теснина <span class="coords">~16,7 км · +546 / ≈ −900 м · 6–7 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="130.0" x2="728" y2="130.0" stroke="#e7e1d6"/><text x="42" y="134.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="54.0" x2="728" y2="54.0" stroke="#e7e1d6"/><text x="42" y="58.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><polygon points="48.0,168 48.0,54.0 728.0,92.0 728.0,168" fill="#2a9d8f" opacity=".12"/><polyline points="48.0,54.0 728.0,92.0" fill="none" stroke="#2a9d8f" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="54.0" r="4.5" fill="#fff" stroke="#2a9d8f" stroke-width="2.5"/><text x="48.0" y="44.0" text-anchor="start" font-size="11" font-weight="700" fill="#2a9d8f">1500 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Гуниб · 0 км</text><circle cx="728.0" cy="92.0" r="4.5" fill="#fff" stroke="#2a9d8f" stroke-width="2.5"/><text x="728.0" y="82.0" text-anchor="end" font-size="11" font-weight="700" fill="#2a9d8f">1000 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Карадах · 16,7 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>16,7 км, +546 м</b> по треку Wikiloc «Верхний Гуниб – Карадахская теснина» (средний); у vpoxod спуск к теснине ~10 км и −900 м.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> нести с собой; у реки — фильтровать.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед у реки перед теснинкой.</span></div>
+  </div>
+  <p>Долгий спуск с плато к реке и проход по Карадахской теснине — узкой расщелине со стенами в десятки метров. В дождь проходить нельзя.</p><div class="tip">Машину на вывоз из Карадаха договорите заранее.</div>
+</div></div>
+
+<h2 id="logistics">Логистика</h2>
+<h3>Туда и обратно</h3><ul>
+<li><b>Махачкала → Гуниб</b> ~172 км по горной дороге; удобнее машина с водителем или гид — между сёлами общественный транспорт редкий.</li>
+<li>Многие организаторы («Кавказская тропа», vpoxod, клубы гидов) продают этот участок как пеший тур с переездами; самостоятельно — нужна договорённость о вывозе из Карадаха.</li></ul>
+
+<h2 id="money">Деньги и бронирование</h2>
+<ul><li>Цены гостевых домов в источниках не нашли; организованные пешие туры по Дагестану на 7–9 дней стоят от ~77 000 ₽ с человека.</li>
+<li>Местный транспорт к Гамсутлю: «уазик» ~100 ₽, лошадь ~1000 ₽ (по отзыву на Wikiloc).</li></ul>
+
+<h2 id="bailouts">Запасные планы</h2>
+<ul><li>Все ночёвки — в сёлах с дорогой; любой день можно закончить на машине.</li>
+<li>Дождь — не заходить в Карадахскую теснину и Салтинское ущелье.</li></ul>
+
+<h2 id="tracks">Найденные треки (17)</h2><p class="map-note">Реальные записи и описания маршрута на Wikiloc, AllTrails, Outdooractive и komoot — найдены поиском, чтобы каждый день плана можно было проверить чужими GPS-треками. Цифры на карточке — из описания трека (там, где поиск их показал); у разных треков они расходятся.</p><div class="trk"><a href="https://www.wikiloc.com/car-trails/saltinskii-vodopad-vodopad-tobot-karadakhskaia-tesnina-gunib-238932044" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Салтинский водопад – водопад Тобот – Карадахская теснина – Гуниб (авто-кольцо)</span><span class="st">~134 км на машине</span><span class="u">www.wikiloc.com/car-trails/saltinskii-vodopad-vodopad-tobot-karadakhsk</span></a><a href="https://www.wikiloc.com/trails/hiking/russia/dagestan/gamsutl" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Пешие треки к Гамсутлю (подборка Wikiloc)</span><span class="st">треки 2,3–9 км; к аулу ~+400…600 м</span><span class="u">www.wikiloc.com/trails/hiking/russia/dagestan/gamsutl</span></a><a href="https://www.wikiloc.com/trails/outdoor/russia/dagestan/gamsutl" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Все треки у Гамсутля</span><span class="u">www.wikiloc.com/trails/outdoor/russia/dagestan/gamsutl</span></a><a href="https://www.wikiloc.com/trails/hiking/russia/dagestan" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Пешие треки Дагестана (в т.ч. «Верхний Гуниб – Карадахская теснина», 16,7 км, +546 м)</span><span class="u">www.wikiloc.com/trails/hiking/russia/dagestan</span></a><a href="https://www.wikiloc.com/trails/car/russia/dagestan" target="_blank" rel="noopener"><span class="site" style="background:#5a8f29">Wikiloc</span><span class="t">Автомаршруты Дагестана (Гамсутль – Гуниб, Карадах – Чох)</span><span class="u">www.wikiloc.com/trails/car/russia/dagestan</span></a><a href="https://www.komoot.com/guide/18911/hiking-in-dagestan" target="_blank" rel="noopener"><span class="site" style="background:#6aa127">komoot</span><span class="t">Лучшие пешие маршруты Дагестана (петля Гамсутль 6,5 км; Гуниб – Маяк)</span><span class="st">Гамсутль: 6,5 км · ~2 ч 20 мин</span><span class="u">www.komoot.com/guide/18911/hiking-in-dagestan</span></a><a href="https://www.komoot.com/explore/58160/dagestan-co-robic" target="_blank" rel="noopener"><span class="site" style="background:#6aa127">komoot</span><span class="t">Дагестан: что посмотреть (komoot)</span><span class="u">www.komoot.com/explore/58160/dagestan-co-robic</span></a><a href="https://ttrails.ru/routes/kubachi-gunib" target="_blank" rel="noopener"><span class="site" style="background:#555">ttrails</span><span class="t">Кубачи – Гуниб (вело, 2 дня)</span><span class="st">101,8 км · +5402 м · макс. 2044 м</span><span class="u">ttrails.ru/routes/kubachi-gunib</span></a><a href="https://www.vpoxod.ru/route/dagestan/kavkazskaya-tropa1/about" target="_blank" rel="noopener"><span class="site" style="background:#555">vpoxod</span><span class="t">Большая Кавказская тропа: треккинг по Дагестану (Гамсутль – Чох – Гуниб – Карадах)</span><span class="st">7 дней · ~55 км пешком</span><span class="u">www.vpoxod.ru/route/dagestan/kavkazskaya-tropa1/about</span></a><a href="https://www.vpoxod.ru/route/dagestan/bolshaya-kavkazskaya-tropa-gornyj-dagestan" target="_blank" rel="noopener"><span class="site" style="background:#555">vpoxod</span><span class="t">Большая Кавказская тропа: Горный Дагестан</span><span class="u">www.vpoxod.ru/route/dagestan/bolshaya-kavkazskaya-tropa-gornyj-dagesta</span></a><a href="https://www.vpoxod.ru/route/dagestan/bolshaya-kavkazskaya-tropa-iz-derbenta-vdol-gornoj-steny/about" target="_blank" rel="noopener"><span class="site" style="background:#555">vpoxod</span><span class="t">Большая Кавказская тропа: из Дербента вдоль Горной стены</span><span class="u">www.vpoxod.ru/route/dagestan/bolshaya-kavkazskaya-tropa-iz-derbenta-vd</span></a><a href="https://caucasiantrail.ru/routes" target="_blank" rel="noopener"><span class="site" style="background:#555">Кавказская тропа</span><span class="t">Маршруты Кавказской тропы (официальный сайт)</span><span class="u">caucasiantrail.ru/routes</span></a><a href="https://caucasiantrail.ru/tours/tropoy-imperatora" target="_blank" rel="noopener"><span class="site" style="background:#555">Кавказская тропа</span><span class="t">«Тропой императора» (Гуниб)</span><span class="u">caucasiantrail.ru/tours/tropoy-imperatora</span></a><a href="https://caucasiantrail.ru/tours/uzory-vremen" target="_blank" rel="noopener"><span class="site" style="background:#555">Кавказская тропа</span><span class="t">«Узоры времён»: Дербент – Кубачи</span><span class="st">8 дней · 107 км · +5811 м</span><span class="u">caucasiantrail.ru/tours/uzory-vremen</span></a><a href="https://kavkaz.travel/touristRoutes/11" target="_blank" rel="noopener"><span class="site" style="background:#555">Кавказ.РФ</span><span class="t">Туристический маршрут: путешествие по Дагестану</span><span class="u">kavkaz.travel/touristRoutes/11</span></a><a href="https://kavkaz.travel/articles/48" target="_blank" rel="noopener"><span class="site" style="background:#555">Кавказ.РФ</span><span class="t">С рюкзаком по горным тропам: как устроен пеший туризм в Дагестане</span><span class="st">50+ треков, 7 вокруг Чоха</span><span class="u">kavkaz.travel/articles/48</span></a><a href="https://samokatus.ru/treking-po-dagestanu" target="_blank" rel="noopener"><span class="site" style="background:#555">Самокатус</span><span class="t">Трекинг в Дагестане по «Кавказской тропе» в 2026: карта, остановки</span><span class="u">samokatus.ru/treking-po-dagestanu</span></a></div>
+<h2 id="sources">Источники (11)</h2>
+<div class="src-group"><h4>Маршрут и проект «Кавказская тропа»</h4><ul><li><a href="https://www.vpoxod.ru/route/dagestan/kavkazskaya-tropa1/about" target="_blank">vpoxod — Большая Кавказская тропа: треккинг по Дагестану</a></li><li><a href="https://caucasiantrail.ru/routes" target="_blank">Кавказская тропа — маршруты</a></li><li><a href="https://kavkaz.travel/articles/48" target="_blank">Кавказ.РФ — как устроен пеший туризм в Дагестане</a></li><li><a href="https://samokatus.ru/treking-po-dagestanu" target="_blank">Самокатус — трекинг по Кавказской тропе в Дагестане</a></li><li><a href="https://tur-ural.com/product/bolshaya-kavkazskaya-tropa-dagestan" target="_blank">Урал Путник — Большая Кавказская тропа (Дагестан)</a></li><li><a href="https://klubgidov.ru/rossiya/dagestan/peshij-pohod-po-dagestanu-s-lyogkimi-ryukzakami-228705" target="_blank">Клуб гидов — пеший поход по Дагестану с лёгкими рюкзаками</a></li></ul></div><div class="src-group"><h4>Места</h4><ul><li><a href="https://guidego.ru/articles/gamsutl_kak_podnyatsya_peshkom/" target="_blank">guidego — как подняться в Гамсутль пешком</a></li><li><a href="https://porusski.me/2023/06/28/02-gunibskij-rajon-dagestana/" target="_blank">PORUSSKI.me — Гунибский район: что посмотреть</a></li><li><a href="https://33ways.ru/rossija/tochka-ayvazovskogo/" target="_blank">33ways — Чох и точка Айвазовского</a></li><li><a href="https://eduidukudahochu.ru/2025/03/31/odna-na-kavkazskoj-trope-tropoj-imperatora-den-6-12-progulka-k-gunibskoj-kreposti/" target="_blank">Еду Иду — «Тропой императора», прогулка к Гунибской крепости</a></li><li><a href="https://www.tourister.ru/responses/id_23743" target="_blank">Туристер — Нагорный Дагестан: Гуниб (отчёт)</a></li></ul></div>
+</main>
+<footer><div class="wrap"><p>Маршрут собран в октябре 2026 по 11 источникам (ссылки выше); цифры из разных источников часто расходятся —
+перед поездкой перепроверьте даты работы, цены и телефоны напрямую. Высоты точек сверены с моделью рельефа SRTM
+(данные NASA, через AWS Terrain Tiles). Карта: Leaflet + OpenStreetMap / OpenTopoMap / Esri.</p></div></footer>
+<script>
+const LINES=[{"day": 1, "color": "#e63946", "label": "День 1 · 8 мая, сб · Салтинский водопад → переезд к Чоху · ~3 км", "segs": [{"real": false, "ll": [[42.384, 47.068]]}]}, {"day": 2, "color": "#9d0208", "label": "День 2 · 9 мая, вс · Чох → аул-призрак Гамсутль → Чох · ~6,5–9 км", "segs": [{"real": false, "ll": [[42.3209, 47.0317], [42.3038, 46.9965], [42.3209, 47.0317]]}]}, {"day": 3, "color": "#7b2cbf", "label": "День 3 · 10 мая, пн · Чох → Кегерское плато → Гуниб · ~10–18 км", "segs": [{"real": false, "ll": [[42.3209, 47.0317], [42.395, 46.952]]}]}, {"day": 5, "color": "#2a9d8f", "label": "День 5 · 12 мая, ср · Верхний Гуниб → Карадахская теснина · ~16,7 км", "segs": [{"real": false, "ll": [[42.395, 46.952], [42.46, 46.845]]}]}];
+const MARKS=[{"ll": [42.384, 47.068], "name": "Салтинский водопад", "approx": true, "ele": 1248, "srtm": 1248, "mark": null, "color": "#1d3557", "note": "подземный водопад, ущелье ~1 км", "kind": "poi"}, {"ll": [42.3038, 46.9965], "name": "Гамсутль", "approx": false, "ele": 1670, "srtm": 1671, "mark": null, "color": "#1d3557", "note": "аул-призрак на скале", "kind": "poi"}, {"ll": [42.3209, 47.0317], "name": "Чох", "approx": false, "ele": 1565, "srtm": 1565, "mark": "1", "color": "#e63946", "note": "ночи 1–2; гостевые дома, лошади, гиды", "kind": "stage"}, {"ll": [42.395, 46.952], "name": "Гуниб", "approx": true, "ele": 1500, "srtm": 1499, "mark": "3", "color": "#7b2cbf", "note": "ночи 3–4; крепость, Гунибское плато", "kind": "stage"}, {"ll": [42.46, 46.845], "name": "Карадахская теснина", "approx": true, "ele": 1000, "srtm": 1000, "mark": "Ф", "color": "#2a9d8f", "note": "финиш; узкий каньон, в дождь опасно", "kind": "stage"}];
+const map=L.map('map',{preferCanvas:true});
+const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'});
+const topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'&copy; OpenStreetMap, SRTM | OpenTopoMap (CC-BY-SA)'});
+const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'&copy; Esri World Imagery'});
+topo.addTo(map);
+let bounds=null; const groups={};
+LINES.forEach(d=>{
+  const g=L.featureGroup();
+  d.segs.forEach(s=>g.addLayer(L.polyline(s.ll,s.real?{color:d.color,weight:5,opacity:.92}:{color:d.color,weight:4,opacity:.9,dashArray:'8 7'}).bindPopup('<b>'+d.label+'</b>'+(s.real?'<br>реальная тропа (OSM)':'<br>схема по ключевым точкам'))));
+  g.addTo(map); groups['День '+d.day]=g;
+  bounds=bounds?bounds.extend(g.getBounds()):g.getBounds();
+});
+function icon(cls,txt,size,bg){return L.divIcon({className:'',html:'<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;background:'+bg+'">'+txt+'</div>',iconSize:[size,size],iconAnchor:[size/2,size/2],popupAnchor:[0,-size/2]});}
+MARKS.forEach(m=>{
+  const ap=m.approx?' <span class="approx">≈</span>':'';
+  const pop='<b>'+m.name+'</b>'+ap+'<br>'+m.ele+' м'+(m.approx?'<br><i>место примерное</i>':'')+(m.note?'<br>'+m.note:'');
+  let ic;
+  if(m.kind==='poi') ic=icon('poiIcon','⭐',24,'#e9c46a');
+  else if(m.kind==='exit') ic=icon('exitIcon','\u{1F695}',24,'#6c757d');
+  else ic=icon('ptIcon',m.mark||'•',28,m.color);
+  const mk=L.marker(m.ll,{icon:ic,zIndexOffset:m.kind==='stage'?1000:0}).bindPopup(pop,{maxWidth:300});
+  if(m.kind==='stage') mk.bindTooltip(m.name+(m.approx?' ≈':''),{permanent:true,direction:'right',offset:[16,0],className:'stLabel'});
+  mk.addTo(map);
+});
+map.fitBounds(bounds.pad(0.08));
+L.control.layers({'Рельеф (OpenTopoMap)':topo,'Схема (OSM)':osm,'Спутник (Esri)':esri},groups,{collapsed:true}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+</script>
+</body>
+</html>
