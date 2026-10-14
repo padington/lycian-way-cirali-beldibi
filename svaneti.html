@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сванетия с ребёнком: Местиа → Ушгули за 4 дня</title>
+<meta name="description" content="Классический трек Местиа — Жабеши — Адиши — Ипрали — Ушгули: гестхаусы, брод на лошади, перевал Чхундери, даты, транспорт, источники.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<style>
+  :root{
+    --d1:#e63946; --d2:#9d0208; --d3:#7b2cbf; --d4:#0077b6; --alt:#9e9e9e;
+    --ink:#26221c; --muted:#6d675e; --paper:#faf7f2; --card:#ffffff; --line:#e7e1d6;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:#0b6e99;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1560px;margin:0 auto;padding:0 32px}
+
+  header.hero{background:linear-gradient(160deg,#1d3557 0%,#2b4a75 55%,#3d6b8f 100%);color:#fff;padding:56px 0 40px}
+  header.hero h1{font-size:clamp(26px,4.5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:800}
+  header.hero p.sub{font-size:18px;opacity:.92;margin:0 0 22px;max-width:640px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+        padding:6px 14px;border-radius:999px;font-size:14px;white-space:nowrap}
+
+  nav.toc{position:sticky;top:0;z-index:1001;background:#fffdf9;border-bottom:1px solid var(--line);
+          box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+  nav.toc a{padding:12px 12px;font-size:14px;color:var(--ink);white-space:nowrap;font-weight:600}
+  nav.toc a:hover{color:var(--d1);text-decoration:none}
+
+  h2{font-size:26px;margin:48px 0 16px;font-weight:800}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin-bottom:6px}
+
+  #map{height:78vh;min-height:420px;border-radius:12px;border:1px solid var(--line);margin:8px 0 10px}
+  .map-note{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .btn{display:inline-block;background:#1d3557;color:#fff;padding:9px 18px;border-radius:8px;
+       font-weight:600;font-size:14.5px}
+  .btn:hover{background:#2b4a75;text-decoration:none}
+
+  .day{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--dc,#888);
+       border-radius:12px;padding:22px 24px;margin:20px 0}
+  .day h3{margin-top:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .day h3 .tag{font-size:12.5px;font-weight:700;color:#fff;background:var(--dc,#888);
+               padding:3px 10px;border-radius:999px;letter-spacing:.4px}
+  .day h3 .daydate{font-size:12.5px;font-weight:600;color:var(--muted);
+               border:1px solid var(--line);padding:2px 9px;border-radius:999px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;font-size:13.5px;color:var(--muted)}
+  .stat b{color:var(--ink)}
+  .sleep{background:#f4f8fb;border:1px solid #d9e6ef;border-radius:10px;padding:14px 18px;margin-top:14px}
+  .sleep h4{margin:0 0 8px;font-size:15px}
+  .sleep ul{margin-bottom:6px}
+  .coords{font-size:13px;color:var(--muted)}
+  .tip{background:#fff8e8;border:1px solid #f0e2b6;border-radius:10px;padding:12px 18px;margin-top:12px;font-size:14.5px}
+  .tip b{color:#8a6d00}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3efe7}
+  td .day-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+
+  .src-group{margin-bottom:18px}
+  .src-group h4{margin:0 0 6px;font-size:15px}
+  .src-group ul{font-size:14.5px}
+
+  footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);
+         color:var(--muted);font-size:13.5px}
+
+  .legend{background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);
+          font:12.5px/1.5 -apple-system,sans-serif;max-width:300px}
+  .legend h3{margin:0 0 6px;font-size:13.5px}
+  .sw{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .leaflet-popup-content{font:13px/1.45 -apple-system,sans-serif}
+  .nightIcon,.poiIcon,.exitIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .nightIcon{background:#1d3557}.poiIcon{background:#e9c46a;color:#333}.exitIcon{background:#6c757d}
+
+  @media (max-width:640px){
+    #map{height:60vh}
+    .day{padding:18px 16px}
+  }
+
+  .ptIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;
+          font-weight:800;font-size:14px;box-shadow:0 1px 5px rgba(0,0,0,.5);border:2.5px solid #fff}
+  .stLabel{font:600 12px/1.3 -apple-system,sans-serif !important;background:#fff;border-radius:6px;
+           box-shadow:0 1px 4px rgba(0,0,0,.35);padding:2px 8px;border:none}
+  .stLabel:before{display:none}
+  .profile{margin:4px 0 12px}
+  .profile svg{width:100%;height:auto;display:block}
+
+  .dayrow{display:grid;grid-template-columns:250px 1fr;gap:18px;margin:20px 0;align-items:stretch}
+  .dayside{min-width:0}
+  .mini{position:sticky;top:58px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px}
+  .mini svg{width:100%;height:auto;display:block}
+  .mini .cap{font:600 12.5px/1.4 -apple-system,sans-serif;color:var(--muted);text-align:center;margin-top:5px}
+  .dayrow .day{margin:0}
+  @media(max-width:760px){.dayrow{grid-template-columns:1fr}.mini{position:static;max-width:280px;margin:0 auto}}
+
+  .maprow{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;width:100%}
+  .maplegend{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.55}
+  .maplegend h3{margin:0 0 8px;font-size:15px}
+  .maplegend .lgrow{margin-bottom:4px}
+  .maplegend hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+  @media(max-width:960px){.maprow{grid-template-columns:1fr}}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0 4px}
+  .gallery figure{margin:0}
+  .gallery img{width:100%;height:190px;object-fit:cover;border-radius:10px;display:block;background:#eee}
+  .gallery figcaption{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px}
+
+  .daysum{background:#f3f8f0;border:1px solid #d5e6cf;border-radius:10px;padding:12px 18px;margin:10px 0 8px;font-size:14.5px}
+  .daysum .dsrow{margin:4px 0;display:flex;gap:8px}
+  .daysum .dsrow .ic{flex:0 0 auto}
+  .tripsum{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:14px 0;font-size:15px;display:flex;flex-wrap:wrap;gap:6px 28px}
+  .tripsum b{color:var(--ink)}
+
+  .packgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:16px 0 6px}
+  .pack{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .pack h4{margin:0 0 8px;font-size:15px}
+  .pack ul{margin:0;padding-left:20px;font-size:14.5px}
+  .pack li{margin-bottom:5px}
+  .pack li.opt{color:var(--muted)}
+  .pack.nopack{background:#faf6f0;border-style:dashed}
+
+  .warn{background:#fff4e5;border:1px solid #f3c98b;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:15px}
+  .dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0}
+  .dates .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .dates .card b.big{font-size:20px;display:block;margin:2px 0 4px}
+  .dates .card.main{border:2px solid #1d3557}
+  .approx{color:#b45309;font-weight:700}
+  .dayrow.solo{display:block}
+  .tblwrap{overflow-x:auto;max-width:100%}
+  .tblwrap table{min-width:640px}
+</style>
+</head>
+<body>
+<header class="hero" style="background:linear-gradient(160deg,#3d2c1e 0%,#6b4f3a 55%,#8d6e52 100%)">
+  <div class="wrap">
+    <h1>Сванетия с ребёнком:<br>Местиа → Ушгули за 4 дня</h1>
+    <p class="sub">Сванские башни, ледник Адиши, брод на лошади и перевал Чхундери (2655 м) — и всё это от гестхауса к гестхаусу, с ужином у хозяев. Финиш в Ушгули, одной из самых высокогорных деревень Европы.</p>
+    <div class="chips"><span class="chip">🥾 4 ходовых дня</span><span class="chip">📏 ~45–58 км (по разным источникам)</span><span class="chip">⛰️ макс. ~2655 м</span><span class="chip">🛏 сельские гестхаусы</span><span class="chip">👨‍👩‍👧 11–19 км/день</span><span class="chip">🗓 лучшее окно: 3–10 сентября 2027</span></div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap"><a href="#map-sec">Карта</a><a href="#when">Когда идти</a><a href="#plan">План по дням</a><a href="#logistics">Логистика</a><a href="#money">Деньги и бронь</a><a href="#bailouts">Запасные планы</a><a href="#sources">Источники</a><a href="routes.html">Все маршруты ↗</a><a href="index.html">Чиралы → Бельдиби ↗</a></div></nav>
+<main class="wrap">
+
+<h2 id="idea">Идея маршрута</h2>
+<p>Местиа → Ушгули — самый популярный многодневный трек Грузии и часть Транскавказской тропы. Палатка не нужна: в Жабеши, Адиши
+и Ипрали есть гостевые дома с ужином и завтраком, поэтому идёте налегке. По разным источникам весь путь — от ~45 до ~58 км
+и около +2500…3100 м набора за 4 дня; высоты — от ~1400 м в Местиа до ~2650–2700 м на перевале Чхундери.</p>
+<p>Для семьи главное — третий день: брод через реку Адишчала (рано утром мельче, местные перевозят на лошади) и подъём на перевал
+с видом на ледник Адиши. Остальные дни — луга, сосновые склоны и сванские деревни с башнями. Отчётов именно с детьми в источниках
+мало; ориентир — ребёнок, спокойно проходящий 6–8 часов в горах (как на Ликийке).</p>
+
+<h2 id="when">Когда идти</h2>
+<p><b>Основной сезон — июль–сентябрь</b>; встречается и окно «с середины июня до середины октября». До середины июня и с начала октября
+на перевалах возможен снег (Транскавказская тропа), июнь — самый дождливый месяц. Июль–август — самые тёплые и людные.
+<b>Сентябрь</b> большинство источников называет лучшим месяцем: 15–20 °C днём, меньше людей, в конце месяца — осенние краски;
+в конце сентября река у Адиши уже по колено, многие переходят вброд сами.</p>
+<p><b>Брони:</b> гестхаус в Адиши советуют бронировать заранее; билеты на самолёт в Местиа продают не раньше чем за ~30 дней (уточнить).</p>
+<div class="dates"><div class="card main">Основное окно<b class="big">3–10 сентября 2027</b>прилёт 3 сен (пт), трек 4–7 сен, день в Ушгули 8 сен, запасной день на погоду и рейс 9–10 сен.</div>
+<div class="card">Запасное окно<b class="big">20–27 августа 2027</b>теплее и стабильнее, но пик сезона: больше людей, гестхаусы и самолёт бронировать раньше.</div></div>
+
+<h2 id="map-sec">Карта маршрута</h2>
+<div class="warn"><b>Линия на карте — схема, а не GPS-трек.</b> Реальную геометрию тропы из OpenStreetMap для этого маршрута
+скачать не удалось, поэтому дни нарисованы пунктиром по ключевым точкам. Точки, координаты которых
+взяты из источников, отмечены обычными маркерами; 4 точек, поставленных по описаниям и рельефу, помечены знаком
+<span class="approx">≈</span>. Для навигации на месте скачайте трек из источников внизу (maps.me / Organic Maps / Wikiloc).</div>
+<div class="maprow"><div id="map"></div><aside class="maplegend">
+<h3>Легенда</h3>
+<div class="lgrow"><span class="sw" style="background:#e63946"></span><b>Д1 · 4 сен, сб</b> Местиа → Жабеши · 15–16 км</div><div class="lgrow"><span class="sw" style="background:#9d0208"></span><b>Д2 · 5 сен, вс</b> Жабеши → Адиши · ~10,6–11 км</div><div class="lgrow"><span class="sw" style="background:#7b2cbf"></span><b>Д3 · 6 сен, пн</b> Адиши → брод Адишчала → перевал Чхундери → Ипрали · ~18–19 км</div><div class="lgrow"><span class="sw" style="background:#0077b6"></span><b>Д4 · 7 сен, вт</b> Ипрали → Ушгули · ~12,4 км</div>
+<hr>
+<div class="lgrow">пунктир — схема по ключевым точкам</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · <span class="approx">≈</span> примерное место</div>
+</aside></div>
+<div class="tripsum"><span>🥾 <b>~57 км</b> за 4 дня (по The Georgian Guide 16+11+19+12)</span><span>⛰ набор <b>~+3100 м</b>, макс. ~2655 м</span><span>🛏 гестхаусы 55–100 лари/чел. с ужином и завтраком</span><span>🐴 брод Адишчала — лошадь 20–30 лари</span></div>
+
+<h2 id="plan">План по дням</h2>
+<p class="map-note">Даты — для основного окна (3 сен, пт: заезд). Км и набор — по источникам; где они расходятся, дан диапазон.
+Высотные профили построены по ключевым точкам (высоты сверены с моделью рельефа SRTM), промежуточные подъёмы и спуски в них не видны.</p>
+<div class="tblwrap"><table><tr><th>День</th><th>Дата</th><th>Участок</th><th>Км</th><th>Набор / сброс</th><th>Время</th></tr>
+<tr><td><span class="day-dot" style="background:#1d3557"></span>0</td><td>3 сен, пт</td><td>Перелёт Натахтари (Тбилиси) → Местиа или ночной поезд + маршрутка; ночь в Местиа</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><span class="day-dot" style="background:#e63946"></span>1</td><td>4 сен, сб</td><td>Местиа → Жабеши</td><td>15–16 км</td><td>+690…760 м</td><td>6–7 ч</td></tr><tr><td><span class="day-dot" style="background:#9d0208"></span>2</td><td>5 сен, вс</td><td>Жабеши → Адиши</td><td>~10,6–11 км</td><td>+909 / −527 м</td><td>5–6 ч</td></tr><tr><td><span class="day-dot" style="background:#7b2cbf"></span>3</td><td>6 сен, пн</td><td>Адиши → брод Адишчала → перевал Чхундери → Ипрали</td><td>~18–19 км</td><td>≈ +700 / −700 м</td><td>7–9 ч</td></tr><tr><td><span class="day-dot" style="background:#0077b6"></span>4</td><td>7 сен, вт</td><td>Ипрали → Ушгули</td><td>~12,4 км</td><td>+632…677 / −436…511 м</td><td>4–5 ч</td></tr><tr><td><span class="day-dot" style="background:#2a9d8f"></span>5</td><td>8 сен, ср</td><td>День в Ушгули → джип в Местиа</td><td>0–5 км</td><td>—</td><td>прогулки</td></tr></table></div>
+<div class="dayrow solo"><div class="day" style="--dc:#e63946">
+  <h3><span class="tag">ДЕНЬ 1</span> <span class="daydate">4 сен, сб</span> Местиа → Жабеши <span class="coords">15–16 км · +690…760 м · 6–7 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="142.7" x2="728" y2="142.7" stroke="#e7e1d6"/><text x="42" y="146.7" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="117.3" x2="728" y2="117.3" stroke="#e7e1d6"/><text x="42" y="121.3" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="66.7" x2="728" y2="66.7" stroke="#e7e1d6"/><text x="42" y="70.7" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="41.3" x2="728" y2="41.3" stroke="#e7e1d6"/><text x="42" y="45.3" text-anchor="end" font-size="10" fill="#8a8478">2500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,96.6 728.0,82.9 728.0,168" fill="#e63946" opacity=".12"/><polyline points="48.0,96.6 728.0,82.9" fill="none" stroke="#e63946" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="96.6" r="4.5" fill="#fff" stroke="#e63946" stroke-width="2.5"/><text x="48.0" y="86.6" text-anchor="start" font-size="11" font-weight="700" fill="#e63946">1410 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Местиа · 0 км</text><circle cx="728.0" cy="82.9" r="4.5" fill="#fff" stroke="#e63946" stroke-width="2.5"/><text x="728.0" y="72.9" text-anchor="end" font-size="11" font-weight="700" fill="#e63946">1680 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Жабеши · 15,5 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>15–16 км · 6–7 ч</b> · набор по разным источникам +690…760 м; длинный день с множеством развилок — держите трек в телефоне.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> набрать в Местиа; по пути родники и кафе в деревнях (уточнять на месте).</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус на гребне с видом на Ушбу и Тетнульди; ужин у хозяев.</span></div>
+  </div>
+  <p>Тропа поднимается из Местиа на гребень над долиной Мулхуры и спускается к деревням общины Мулахи. Можно заночевать в Чвабиани вместо Жабеши — тропы из обеих деревень сходятся на склоне выше.</p><div class="tip">Отличный «разогревочный» день: если ребёнку тяжело, на этом участке ещё легко вернуться в Местиа.</div><div class="sleep"><h4>🛏 Ночь 1 — Жабеши (или Чвабиани), ~1680 м</h4><ul><li>Гестхаусы с ужином и завтраком; ориентир 70–80 лари с человека, цены быстро растут — уточнять.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#9d0208">
+  <h3><span class="tag">ДЕНЬ 2</span> <span class="daydate">5 сен, вс</span> Жабеши → Адиши <span class="coords">~10,6–11 км · +909 / −527 м · 5–6 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="142.7" x2="728" y2="142.7" stroke="#e7e1d6"/><text x="42" y="146.7" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="117.3" x2="728" y2="117.3" stroke="#e7e1d6"/><text x="42" y="121.3" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="66.7" x2="728" y2="66.7" stroke="#e7e1d6"/><text x="42" y="70.7" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="41.3" x2="728" y2="41.3" stroke="#e7e1d6"/><text x="42" y="45.3" text-anchor="end" font-size="10" fill="#8a8478">2500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,82.9 728.0,63.1 728.0,168" fill="#9d0208" opacity=".12"/><polyline points="48.0,82.9 728.0,63.1" fill="none" stroke="#9d0208" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="82.9" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="48.0" y="72.9" text-anchor="start" font-size="11" font-weight="700" fill="#9d0208">1680 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Жабеши · 0 км</text><circle cx="728.0" cy="63.1" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="728.0" y="53.1" text-anchor="end" font-size="11" font-weight="700" fill="#9d0208">2070 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Адиши · 10,6 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~10,6 км, +909/−527 м · 5–6 ч</b> (по треку caucasus-trekking) · самый короткий день.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> родники по пути; в Адиши есть кафе-бар с кофе.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус на седловине под Тетнульди; вечер — прогулка по Адиши.</span></div>
+  </div>
+  <p>Подъём к склонам горнолыжного курорта Тетнульди и спуск в Адиши — маленькую деревню на 2070 м, куда нет нормальной дороги. Есть верхний вариант тропы вдоль подножия Тетнульди.</p><div class="tip">Вечером договоритесь с хозяевами о лошади на завтрашний брод.</div><div class="sleep"><h4>🛏 Ночь 2 — Адиши, ~2070 м</h4><ul><li>Гестхаус советуют <b>бронировать заранее</b> (Caucasus Trekking); в одном отчёте — комфортный домик за 60 лари.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#7b2cbf">
+  <h3><span class="tag">ДЕНЬ 3</span> <span class="daydate">6 сен, пн</span> Адиши → брод Адишчала → перевал Чхундери → Ипрали <span class="coords">~18–19 км · ≈ +700 / −700 м · 7–9 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="142.7" x2="728" y2="142.7" stroke="#e7e1d6"/><text x="42" y="146.7" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="117.3" x2="728" y2="117.3" stroke="#e7e1d6"/><text x="42" y="121.3" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="66.7" x2="728" y2="66.7" stroke="#e7e1d6"/><text x="42" y="70.7" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="41.3" x2="728" y2="41.3" stroke="#e7e1d6"/><text x="42" y="45.3" text-anchor="end" font-size="10" fill="#8a8478">2500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,63.1 370.1,33.5 728.0,64.1 728.0,168" fill="#7b2cbf" opacity=".12"/><polyline points="48.0,63.1 370.1,33.5 728.0,64.1" fill="none" stroke="#7b2cbf" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="63.1" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="48.0" y="53.1" text-anchor="start" font-size="11" font-weight="700" fill="#7b2cbf">2070 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Адиши · 0 км</text><circle cx="370.1" cy="33.5" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="370.1" y="23.5" text-anchor="middle" font-size="11" font-weight="700" fill="#7b2cbf">2655 м</text><text x="370.1" y="196" text-anchor="middle" font-size="11" fill="#6d675e">Чхундери · 9 км</text><circle cx="728.0" cy="64.1" r="4.5" fill="#fff" stroke="#7b2cbf" stroke-width="2.5"/><text x="728.0" y="54.1" text-anchor="end" font-size="11" font-weight="700" fill="#7b2cbf">2050 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Ипрали · 19 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~18–19 км · 7–9 ч</b> · самый длинный и трудный день: брод, перевал ~2650–2700 м, длинный спуск.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> река и родники до перевала; после — родники на спуске к Халде (проверять).</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед на перевале с видом на ледник Адиши; перекус в Халде.</span></div>
+  </div>
+  <p>Тропа идёт вверх по долине Адишчалы к языку ледника. Реку переходят <b>рано утром</b>, пока она мельче: вода по колено, местами по пояс. Местные перевозят на лошади — 20–30 лари. Дальше крутой подъём на перевал Чхундери и спуск через Халде в Ипрали.</p><div class="tip"><b>Брод с ребёнком — только на лошади</b>, днём вода поднимается и брод опасен. Выходите в 7:00–7:30.</div><div class="sleep"><h4>🛏 Ночь 3 — Ипрали, ~2050 м</h4><ul><li>По отчётам — 55–80 лари с человека с питанием; цену иногда считают на человека, а не на комнату — уточнять.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#0077b6">
+  <h3><span class="tag">ДЕНЬ 4</span> <span class="daydate">7 сен, вт</span> Ипрали → Ушгули <span class="coords">~12,4 км · +632…677 / −436…511 м · 4–5 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="142.7" x2="728" y2="142.7" stroke="#e7e1d6"/><text x="42" y="146.7" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="117.3" x2="728" y2="117.3" stroke="#e7e1d6"/><text x="42" y="121.3" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">1500 м</text><line x1="48" y1="66.7" x2="728" y2="66.7" stroke="#e7e1d6"/><text x="42" y="70.7" text-anchor="end" font-size="10" fill="#8a8478">2000 м</text><line x1="48" y1="41.3" x2="728" y2="41.3" stroke="#e7e1d6"/><text x="42" y="45.3" text-anchor="end" font-size="10" fill="#8a8478">2500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">3000 м</text><polygon points="48.0,168 48.0,64.1 728.0,61.6 728.0,168" fill="#0077b6" opacity=".12"/><polyline points="48.0,64.1 728.0,61.6" fill="none" stroke="#0077b6" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="64.1" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="48.0" y="54.1" text-anchor="start" font-size="11" font-weight="700" fill="#0077b6">2050 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Ипрали · 0 км</text><circle cx="728.0" cy="61.6" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="728.0" y="51.6" text-anchor="end" font-size="11" font-weight="700" fill="#0077b6">2100 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Ушгули · 12,4 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>~12,4 км · 4–5 ч</b> · можно по тропе через мост над Халдечалой или проще — по дороге.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> деревни по пути, в Ушгули — всё есть.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед уже в Ушгули.</span></div>
+  </div>
+  <p>Последний день — по долине Ингури к четырём деревням Ушгули с десятками сванских башен и церковью Ламария под Шхарой.</p><div class="tip">Если сил мало, местные довезут от Ипрали до Ушгули (по одному источнику до 40 лари с человека).</div><div class="sleep"><h4>🛏 Ночь 4 — Ушгули, ~2100 м</h4><ul><li>Гестхаусы 70–100 лари с человека с ужином и завтраком.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#2a9d8f">
+  <h3><span class="tag">ДЕНЬ 5</span> <span class="daydate">8 сен, ср</span> День в Ушгули → джип в Местиа <span class="coords">0–5 км · — · прогулки</span></h3>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span>Утро — к церкви Ламария и под ледник Шхары (по желанию), днём — джип или маршрутка в Местиа (30–70 лари с человека).</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> —</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> ужин в Местиа.</span></div>
+  </div>
+  <p>Обратный трансфер проще всего заказать заранее через гестхаус в Местиа (в одном отчёте — 30 лари).</p>
+</div></div>
+
+<h2 id="logistics">Логистика</h2>
+<h3>Туда</h3><ul>
+<li><b>Самолёт Vanilla Sky</b> из Натахтари (23 км от Тбилиси, есть бесплатный трансфер из центра) в Местиа: по расписанию 2023 года — 90 лари взрослый,
+63 лари ребёнок 3–12 лет; 4–5 рейсов в неделю; места быстро кончаются, рейсы отменяют по погоде — нужен запасной день.</li>
+<li><b>Наземно:</b> ночной поезд Тбилиси → Зугдиди и маршрутка в Местиа (~9 часов в сумме от Тбилиси; ~6 часов из Кутаиси или Батуми).</li></ul>
+<h3>Обратно</h3><ul><li>Из Ушгули — джип/маршрутка в Местиа (30–70 лари с человека), дальше самолёт или маршрутка.</li></ul>
+
+<h2 id="money">Деньги и бронирование</h2>
+<ul><li><b>Ночёвки:</b> 70–80 лари с человека за ночь с ужином и завтраком (Местиа и Ушгули дороже — до 100–120).</li>
+<li><b>Весь трек</b> по одной оценке (2026) — ~450 лари на человека плюс транспорт обратно; другая оценка — ~325 лари.</li>
+<li><b>Плюс:</b> лошадь на брод 20–30 лари, трансфер Ушгули → Местиа 30–70 лари, самолёт 90/63 лари.</li>
+<li>Разрешений и платы за нацпарк нет.</li></ul>
+
+<h2 id="bailouts">Запасные планы</h2>
+<ul><li><b>Дни 1–2</b> — можно вернуться в Местиа.</li>
+<li><b>Ипрали</b> стоит на дороге Местиа — Ушгули: если третий день вымотал, день 4 — на машине.</li>
+<li><b>Высокая вода / плохая погода на броде</b> — ждать утра; без лошади с ребёнком реку не переходить.</li></ul>
+
+<h2 id="sources">Источники (17)</h2>
+<div class="src-group"><h4>Маршрут и этапы</h4><ul><li><a href="https://www.caucasus-trekking.com/treks/trek-mestia-to-ushguli" target="_blank">Caucasus Trekking — Mestia to Ushguli (полный гайд)</a></li><li><a href="https://thegeorgianguide.com/hiking/mestia-ushguli-trek/" target="_blank">The Georgian Guide — Mestia–Ushguli 2026: этапы, цены, транспорт</a></li><li><a href="https://beyondwildplaces.com/complete-guide-to-the-mestia-to-ushguli-trek/" target="_blank">Beyond Wild Places — Mestia to Ushguli (2026)</a></li><li><a href="https://www.roowanders.com/trek-mestia-to-ushguli/" target="_blank">RooWanders — Mestia to Ushguli 4-day trek</a></li><li><a href="https://wander-lush.org/mestia-ushguli-trek-tips/" target="_blank">Wander-Lush — Mestia Ushguli trek: honest guide</a></li><li><a href="https://www.goingthewholehogg.com/transcaucasian-trail-svaneti-mestia-to-ushguli/" target="_blank">Going the Whole Hogg — Transcaucasian Trail: Mestia to Ushguli</a></li><li><a href="https://www.svanetitrekking.com/classical-trek-mestia-ushguli-4-days/" target="_blank">Svaneti Trekking — classical trek 4 days</a></li></ul></div><div class="src-group"><h4>Сезон и погода</h4><ul><li><a href="https://transcaucasiantrail.org/en/explore-the-trail/when-to-hike/" target="_blank">Transcaucasian Trail — когда идти</a></li><li><a href="https://prosvaneti.ge/en/blog/best-time-to-visit-svaneti" target="_blank">ProSvaneti — best time to visit Svaneti</a></li><li><a href="https://en.climate-data.org/asia/georgia/samegrelo-upper-svaneti/mestia-37091/" target="_blank">Climate-Data — климат Местиа</a></li></ul></div><div class="src-group"><h4>Цены и транспорт</h4><ul><li><a href="https://realtalktravel.com/cost-mestia-to-ushguli-hike/" target="_blank">Real Talk Travel — Mestia–Ushguli cost breakdown</a></li><li><a href="https://travelsurfrepeat.com/how-to-fly-from-natakhtari-tbilisi-to-mestia/" target="_blank">Travel Surf Repeat — как долететь в Местиа из Натахтари</a></li><li><a href="https://campcaucasus.com/how-to-travel-to-mestia-from-tbilisi-kutaisi-or-zugdidi/" target="_blank">Camp Caucasus — как добраться в Местиа в 2026</a></li><li><a href="https://ticket.vanillasky.ge/en/node/51" target="_blank">Vanilla Sky — расписание</a></li></ul></div><div class="src-group"><h4>Русскоязычные отчёты</h4><ul><li><a href="https://forum.awd.ru/viewtopic.php?f=622&t=423455" target="_blank">Форум Винского — советы для трекинга Местиа–Ушгули</a></li><li><a href="https://motohorek.life/2020/09/mestia-ushguli-trek/" target="_blank">motohorek.life — поход из Местии в Ушгули</a></li><li><a href="https://www.drive2.ru/b/636488040939785331/" target="_blank">DRIVE2 — трекинг в Сванетии, Местиа–Ушгули</a></li></ul></div>
+</main>
+<footer><div class="wrap"><p>Маршрут собран в октябре 2026 по 17 источникам (ссылки выше); цифры из разных источников часто расходятся —
+перед поездкой перепроверьте даты работы, цены и телефоны напрямую. Высоты точек сверены с моделью рельефа SRTM
+(данные NASA, через AWS Terrain Tiles). Карта: Leaflet + OpenStreetMap / OpenTopoMap / Esri.</p></div></footer>
+<script>
+const LINES=[{"day": 1, "color": "#e63946", "label": "День 1 · 4 сен, сб · Местиа → Жабеши · 15–16 км", "segs": [{"real": false, "ll": [[43.0457, 42.729], [43.05, 42.88]]}]}, {"day": 2, "color": "#9d0208", "label": "День 2 · 5 сен, вс · Жабеши → Адиши · ~10,6–11 км", "segs": [{"real": false, "ll": [[43.05, 42.88], [42.9964, 42.9147]]}]}, {"day": 3, "color": "#7b2cbf", "label": "День 3 · 6 сен, пн · Адиши → брод Адишчала → перевал Чхундери → Ипрали · ~18–19 км", "segs": [{"real": false, "ll": [[42.9964, 42.9147], [42.976, 42.938], [42.952, 42.961]]}]}, {"day": 4, "color": "#0077b6", "label": "День 4 · 7 сен, вт · Ипрали → Ушгули · ~12,4 км", "segs": [{"real": false, "ll": [[42.952, 42.961], [42.9178, 43.0157]]}]}];
+const MARKS=[{"ll": [43.0457, 42.729], "name": "Местиа", "approx": true, "ele": 1410, "srtm": 1411, "mark": "С", "color": "#1d3557", "note": "аэропорт королевы Тамары, маршрутки", "kind": "stage"}, {"ll": [43.05, 42.88], "name": "Жабеши", "approx": true, "ele": 1680, "srtm": 1667, "mark": "1", "color": "#e63946", "note": "ночь 1; альтернатива — Чвабиани", "kind": "stage"}, {"ll": [42.9964, 42.9147], "name": "Адиши", "approx": false, "ele": 2070, "srtm": 2069, "mark": "2", "color": "#9d0208", "note": "ночь 2; координаты — Wikipedia", "kind": "stage"}, {"ll": [42.976, 42.938], "name": "перевал Чхундери", "approx": true, "ele": 2655, "srtm": 2656, "mark": null, "color": "#1d3557", "note": "вид на ледник Адиши", "kind": "poi"}, {"ll": [42.952, 42.961], "name": "Ипрали", "approx": true, "ele": 2050, "srtm": 2048, "mark": "3", "color": "#7b2cbf", "note": "ночь 3; дорога на Местиа/Ушгули", "kind": "stage"}, {"ll": [42.9178, 43.0157], "name": "Ушгули", "approx": false, "ele": 2100, "srtm": 2122, "mark": "Ф", "color": "#2a9d8f", "note": "финиш; координаты — Wikipedia", "kind": "stage"}];
+const map=L.map('map',{preferCanvas:true});
+const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'});
+const topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'&copy; OpenStreetMap, SRTM | OpenTopoMap (CC-BY-SA)'});
+const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'&copy; Esri World Imagery'});
+topo.addTo(map);
+let bounds=null; const groups={};
+LINES.forEach(d=>{
+  const g=L.featureGroup();
+  d.segs.forEach(s=>g.addLayer(L.polyline(s.ll,s.real?{color:d.color,weight:5,opacity:.92}:{color:d.color,weight:4,opacity:.9,dashArray:'8 7'}).bindPopup('<b>'+d.label+'</b>'+(s.real?'<br>реальная тропа (OSM)':'<br>схема по ключевым точкам'))));
+  g.addTo(map); groups['День '+d.day]=g;
+  bounds=bounds?bounds.extend(g.getBounds()):g.getBounds();
+});
+function icon(cls,txt,size,bg){return L.divIcon({className:'',html:'<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;background:'+bg+'">'+txt+'</div>',iconSize:[size,size],iconAnchor:[size/2,size/2],popupAnchor:[0,-size/2]});}
+MARKS.forEach(m=>{
+  const ap=m.approx?' <span class="approx">≈</span>':'';
+  const pop='<b>'+m.name+'</b>'+ap+'<br>'+m.ele+' м'+(m.approx?'<br><i>место примерное</i>':'')+(m.note?'<br>'+m.note:'');
+  let ic;
+  if(m.kind==='poi') ic=icon('poiIcon','⭐',24,'#e9c46a');
+  else if(m.kind==='exit') ic=icon('exitIcon','\u{1F695}',24,'#6c757d');
+  else ic=icon('ptIcon',m.mark||'•',28,m.color);
+  const mk=L.marker(m.ll,{icon:ic,zIndexOffset:m.kind==='stage'?1000:0}).bindPopup(pop,{maxWidth:300});
+  if(m.kind==='stage') mk.bindTooltip(m.name+(m.approx?' ≈':''),{permanent:true,direction:'right',offset:[16,0],className:'stLabel'});
+  mk.addTo(map);
+});
+map.fitBounds(bounds.pad(0.08));
+L.control.layers({'Рельеф (OpenTopoMap)':topo,'Схема (OSM)':osm,'Спутник (Esri)':esri},groups,{collapsed:true}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+</script>
+</body>
+</html>
