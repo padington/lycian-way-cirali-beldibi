@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Восточная Ликийка с ребёнком: Мавикент → Караоз → маяк Гелидония → Адрасан → Олимпос</title>
+<meta name="description" content="Прибрежная восточная часть Ликийской тропы от гестхауса к гестхаусу: Караоз, маяк Гелидония, Адрасан, гора Муса, Олимпос и Чиралы. Даты, пансионы, источники.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
+<style>
+  :root{
+    --d1:#e63946; --d2:#9d0208; --d3:#7b2cbf; --d4:#0077b6; --alt:#9e9e9e;
+    --ink:#26221c; --muted:#6d675e; --paper:#faf7f2; --card:#ffffff; --line:#e7e1d6;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  a{color:#0b6e99;text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1560px;margin:0 auto;padding:0 32px}
+
+  header.hero{background:linear-gradient(160deg,#1d3557 0%,#2b4a75 55%,#3d6b8f 100%);color:#fff;padding:56px 0 40px}
+  header.hero h1{font-size:clamp(26px,4.5vw,40px);line-height:1.2;margin:0 0 12px;font-weight:800}
+  header.hero p.sub{font-size:18px;opacity:.92;margin:0 0 22px;max-width:640px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);
+        padding:6px 14px;border-radius:999px;font-size:14px;white-space:nowrap}
+
+  nav.toc{position:sticky;top:0;z-index:1001;background:#fffdf9;border-bottom:1px solid var(--line);
+          box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding:0 12px}
+  nav.toc a{padding:12px 12px;font-size:14px;color:var(--ink);white-space:nowrap;font-weight:600}
+  nav.toc a:hover{color:var(--d1);text-decoration:none}
+
+  h2{font-size:26px;margin:48px 0 16px;font-weight:800}
+  h3{font-size:19px;margin:26px 0 10px;font-weight:700}
+  p{margin:0 0 14px}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin-bottom:6px}
+
+  #map{height:78vh;min-height:420px;border-radius:12px;border:1px solid var(--line);margin:8px 0 10px}
+  .map-note{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .btn{display:inline-block;background:#1d3557;color:#fff;padding:9px 18px;border-radius:8px;
+       font-weight:600;font-size:14.5px}
+  .btn:hover{background:#2b4a75;text-decoration:none}
+
+  .day{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--dc,#888);
+       border-radius:12px;padding:22px 24px;margin:20px 0}
+  .day h3{margin-top:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .day h3 .tag{font-size:12.5px;font-weight:700;color:#fff;background:var(--dc,#888);
+               padding:3px 10px;border-radius:999px;letter-spacing:.4px}
+  .day h3 .daydate{font-size:12.5px;font-weight:600;color:var(--muted);
+               border:1px solid var(--line);padding:2px 9px;border-radius:999px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+  .stat{background:var(--paper);border:1px solid var(--line);border-radius:8px;
+        padding:4px 12px;font-size:13.5px;color:var(--muted)}
+  .stat b{color:var(--ink)}
+  .sleep{background:#f4f8fb;border:1px solid #d9e6ef;border-radius:10px;padding:14px 18px;margin-top:14px}
+  .sleep h4{margin:0 0 8px;font-size:15px}
+  .sleep ul{margin-bottom:6px}
+  .coords{font-size:13px;color:var(--muted)}
+  .tip{background:#fff8e8;border:1px solid #f0e2b6;border-radius:10px;padding:12px 18px;margin-top:12px;font-size:14.5px}
+  .tip b{color:#8a6d00}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:14.5px}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3efe7}
+  td .day-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+
+  .src-group{margin-bottom:18px}
+  .src-group h4{margin:0 0 6px;font-size:15px}
+  .src-group ul{font-size:14.5px}
+
+  footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);
+         color:var(--muted);font-size:13.5px}
+
+  .legend{background:#fff;padding:10px 14px;border-radius:8px;box-shadow:0 1px 6px rgba(0,0,0,.35);
+          font:12.5px/1.5 -apple-system,sans-serif;max-width:300px}
+  .legend h3{margin:0 0 6px;font-size:13.5px}
+  .sw{display:inline-block;width:20px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  .leaflet-popup-content{font:13px/1.45 -apple-system,sans-serif}
+  .nightIcon,.poiIcon,.exitIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;
+        color:#fff;font-size:13px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .nightIcon{background:#1d3557}.poiIcon{background:#e9c46a;color:#333}.exitIcon{background:#6c757d}
+
+  @media (max-width:640px){
+    #map{height:60vh}
+    .day{padding:18px 16px}
+  }
+
+  .ptIcon{display:flex;align-items:center;justify-content:center;border-radius:50%;color:#fff;
+          font-weight:800;font-size:14px;box-shadow:0 1px 5px rgba(0,0,0,.5);border:2.5px solid #fff}
+  .stLabel{font:600 12px/1.3 -apple-system,sans-serif !important;background:#fff;border-radius:6px;
+           box-shadow:0 1px 4px rgba(0,0,0,.35);padding:2px 8px;border:none}
+  .stLabel:before{display:none}
+  .profile{margin:4px 0 12px}
+  .profile svg{width:100%;height:auto;display:block}
+
+  .dayrow{display:grid;grid-template-columns:250px 1fr;gap:18px;margin:20px 0;align-items:stretch}
+  .dayside{min-width:0}
+  .mini{position:sticky;top:58px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 8px 6px}
+  .mini svg{width:100%;height:auto;display:block}
+  .mini .cap{font:600 12.5px/1.4 -apple-system,sans-serif;color:var(--muted);text-align:center;margin-top:5px}
+  .dayrow .day{margin:0}
+  @media(max-width:760px){.dayrow{grid-template-columns:1fr}.mini{position:static;max-width:280px;margin:0 auto}}
+
+  .maprow{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;width:100%}
+  .maplegend{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:13px;line-height:1.55}
+  .maplegend h3{margin:0 0 8px;font-size:15px}
+  .maplegend .lgrow{margin-bottom:4px}
+  .maplegend hr{border:none;border-top:1px solid var(--line);margin:8px 0}
+  @media(max-width:960px){.maprow{grid-template-columns:1fr}}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0 4px}
+  .gallery figure{margin:0}
+  .gallery img{width:100%;height:190px;object-fit:cover;border-radius:10px;display:block;background:#eee}
+  .gallery figcaption{font-size:12px;color:var(--muted);line-height:1.4;margin-top:4px}
+
+  .daysum{background:#f3f8f0;border:1px solid #d5e6cf;border-radius:10px;padding:12px 18px;margin:10px 0 8px;font-size:14.5px}
+  .daysum .dsrow{margin:4px 0;display:flex;gap:8px}
+  .daysum .dsrow .ic{flex:0 0 auto}
+  .tripsum{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 20px;margin:14px 0;font-size:15px;display:flex;flex-wrap:wrap;gap:6px 28px}
+  .tripsum b{color:var(--ink)}
+
+  .packgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin:16px 0 6px}
+  .pack{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .pack h4{margin:0 0 8px;font-size:15px}
+  .pack ul{margin:0;padding-left:20px;font-size:14.5px}
+  .pack li{margin-bottom:5px}
+  .pack li.opt{color:var(--muted)}
+  .pack.nopack{background:#faf6f0;border-style:dashed}
+
+  .warn{background:#fff4e5;border:1px solid #f3c98b;border-radius:10px;padding:12px 16px;margin:14px 0;font-size:15px}
+  .dates{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:12px 0}
+  .dates .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+  .dates .card b.big{font-size:20px;display:block;margin:2px 0 4px}
+  .dates .card.main{border:2px solid #1d3557}
+  .approx{color:#b45309;font-weight:700}
+  .dayrow.solo{display:block}
+  .tblwrap{overflow-x:auto;max-width:100%}
+  .tblwrap table{min-width:640px}
+</style>
+</head>
+<body>
+<header class="hero" style="background:linear-gradient(160deg,#023e8a 0%,#0077b6 55%,#48cae4 100%)">
+  <div class="wrap">
+    <h1>Восточная Ликийка:<br>Караоз → маяк Гелидония → Адрасан → Олимпос</h1>
+    <p class="sub">Самый морской кусок Ликийской тропы — дикие бухты, самый высокий маяк турецкого побережья и перевал через гору Муса. Заканчивается там, где начался ваш прошлый поход: в Олимпосе и Чиралы, у огней Химеры.</p>
+    <div class="chips"><span class="chip">🥾 4 ходовых дня + день у моря</span><span class="chip">📏 ~45–55 км</span><span class="chip">⛰️ макс. ~650 м</span><span class="chip">🛏 пансионы</span><span class="chip">👨‍👩‍👧 8–21 км/день</span><span class="chip">🗓 лучшее окно: 16–22 апреля 2027</span></div>
+  </div>
+</header>
+<nav class="toc"><div class="wrap"><a href="#map-sec">Карта</a><a href="#when">Когда идти</a><a href="#plan">План по дням</a><a href="#logistics">Логистика</a><a href="#money">Деньги и бронь</a><a href="#bailouts">Запасные планы</a><a href="#sources">Источники</a><a href="routes.html">Все маршруты ↗</a><a href="index.html">Чиралы → Бельдиби ↗</a></div></nav>
+<main class="wrap">
+
+<h2 id="idea">Идея маршрута</h2>
+<p>Восточная Ликийка между Финике и Олимпосом — это побережье почти без дорог: от тихого Караоза тропа идёт по мысу Гелидония
+к маяку на 227 м (в 2005 году — самый высоко поставленный маяк турецкого побережья), спускается к пляжам Адрасана и переваливает через
+гору Муса (~650 м) в долину Олимпоса. Многие отчёты называют участок от маяка до Караоза самым красивым на востоке тропы.</p>
+<p>Минусы для семьи честно: день Караоз → Адрасан длинный (17–21 км) и почти без воды, а связь на нём может пропадать. Поэтому в плане
+есть короткий разогревочный день, день отдыха у моря в Адрасане и короткий финиш в Чиралы — уже знакомом вам месте.</p>
+
+<h2 id="when">Когда идти</h2>
+<p>Большинство источников советует <b>весну (конец марта – начало мая)</b> и <b>осень (конец сентября – начало ноября)</b>;
+летом бывает за 40 °C. Апрель — «идеальная погода» по нескольким гидам, дожди весной слабые и родники ещё работают.
+Осенью после жаркого года многие источники пересыхают, а с ноября растёт риск дождей.</p>
+<div class="dates"><div class="card main">Основное окно<b class="big">16–22 апреля 2027</b>заезд 16 апр (пт), тропа 17–21 апр, выезд 22 апр. Весна, цветение, родники работают.</div>
+<div class="card">Уже этой осенью<b class="big">30 октября – 5 ноября 2026</b>море ещё тёплое, но воду нести всю с собой и следить за прогнозом — с ноября дождей больше.</div></div>
+
+<h2 id="map-sec">Карта маршрута</h2>
+<div class="warn"><b>Линия на карте — схема, а не GPS-трек.</b> Реальную геометрию тропы из OpenStreetMap для этого маршрута
+скачать не удалось, поэтому дни нарисованы пунктиром по ключевым точкам (кроме ~8 км от горы Муса до Олимпоса — там реальная геометрия тропы из OpenStreetMap, взятая из данных этого же сайта). Точки, координаты которых
+взяты из источников, отмечены обычными маркерами; 4 точек, поставленных по описаниям и рельефу, помечены знаком
+<span class="approx">≈</span>. Для навигации на месте скачайте трек из источников внизу (maps.me / Organic Maps / Wikiloc).</div>
+<div class="maprow"><div id="map"></div><aside class="maplegend">
+<h3>Легенда</h3>
+<div class="lgrow"><span class="sw" style="background:#e63946"></span><b>Д1 · 17 апр, сб</b> Мавикент → Караоз (разогрев) · 8–11 км</div><div class="lgrow"><span class="sw" style="background:#9d0208"></span><b>Д2 · 18 апр, вс</b> Караоз → маяк Гелидония → Адрасан · 17–21 км</div><div class="lgrow"><span class="sw" style="background:#0077b6"></span><b>Д4 · 20 апр, вт</b> Адрасан → гора Муса → Олимпос · 13,7–16 км</div><div class="lgrow"><span class="sw" style="background:#2a9d8f"></span><b>Д5 · 21 апр, ср</b> Олимпос → Чиралы → огни Химеры · 2 + 2,5 км</div>
+<hr>
+<div class="lgrow">пунктир — схема по ключевым точкам; сплошная — реальная тропа из OSM</div>
+<div class="lgrow">⭐ достопримечательности · 🚕 запасные выходы · <span class="approx">≈</span> примерное место</div>
+</aside></div>
+<div class="tripsum"><span>🥾 <b>~45–55 км</b> за 4 ходовых дня</span><span>⛰ набор <b>~+1700…2200 м</b> (по источникам)</span><span>🛏 пансионы, €25–50/чел. с питанием</span><span>💧 день 2 и день 4 — вода только с собой (3 л/чел.)</span></div>
+
+<h2 id="plan">План по дням</h2>
+<p class="map-note">Даты — для основного окна (16 апр, пт: заезд). Км и набор — по источникам; где они расходятся, дан диапазон.
+Высотные профили построены по ключевым точкам (высоты сверены с моделью рельефа SRTM), промежуточные подъёмы и спуски в них не видны.</p>
+<div class="tblwrap"><table><tr><th>День</th><th>Дата</th><th>Участок</th><th>Км</th><th>Набор / сброс</th><th>Время</th></tr>
+<tr><td><span class="day-dot" style="background:#1d3557"></span>0</td><td>16 апр, пт</td><td>Анталья → Кумлуджа (автобус) → такси в Мавикент / Караоз; ночь в Караозе</td><td>—</td><td>—</td><td>—</td></tr>
+<tr><td><span class="day-dot" style="background:#e63946"></span>1</td><td>17 апр, сб</td><td>Мавикент → Караоз (разогрев)</td><td>8–11 км</td><td>почти ровно</td><td>3–4 ч</td></tr><tr><td><span class="day-dot" style="background:#9d0208"></span>2</td><td>18 апр, вс</td><td>Караоз → маяк Гелидония → Адрасан</td><td>17–21 км</td><td>+880…1200 м</td><td>7–9 ч</td></tr><tr><td><span class="day-dot" style="background:#7b2cbf"></span>3</td><td>19 апр, пн</td><td>День отдыха в Адрасане: лодка на Сулуаду</td><td>—</td><td>—</td><td>весь день у моря</td></tr><tr><td><span class="day-dot" style="background:#0077b6"></span>4</td><td>20 апр, вт</td><td>Адрасан → гора Муса → Олимпос</td><td>13,7–16 км</td><td>+750…910 м</td><td>6–8 ч</td></tr><tr><td><span class="day-dot" style="background:#2a9d8f"></span>5</td><td>21 апр, ср</td><td>Олимпос → Чиралы → огни Химеры</td><td>2 + 2,5 км</td><td>+250 м вечером</td><td>2 ч</td></tr></table></div>
+<div class="dayrow solo"><div class="day" style="--dc:#e63946">
+  <h3><span class="tag">ДЕНЬ 1</span> <span class="daydate">17 апр, сб</span> Мавикент → Караоз (разогрев) <span class="coords">8–11 км · почти ровно · 3–4 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><polygon points="48.0,168 48.0,167.2 728.0,166.5 728.0,168" fill="#e63946" opacity=".12"/><polyline points="48.0,167.2 728.0,166.5" fill="none" stroke="#e63946" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="167.2" r="4.5" fill="#fff" stroke="#e63946" stroke-width="2.5"/><text x="48.0" y="157.2" text-anchor="start" font-size="11" font-weight="700" fill="#e63946">5 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Мавикент · 0 км</text><circle cx="728.0" cy="166.5" r="4.5" fill="#fff" stroke="#e63946" stroke-width="2.5"/><text x="728.0" y="156.5" text-anchor="end" font-size="11" font-weight="700" fill="#e63946">10 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Караоз · 9 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>8–11 км</b> (Wikivoyage — 8 км, lycianway.org — 11 км) · вдоль берега, с пляжами по пути.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> магазины в Мавикенте и Караозе (в Караозе два магазина, дорогие).</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> обед на пляже; вечер — купание в Караозе.</span></div>
+  </div>
+  <p>Спокойный день вдоль моря, чтобы втянуться. Караоз — небольшая неприметная деревня с кемпингами и пансионами, по-английски там почти не говорят.</p><div class="tip">Можно пропустить и сразу ночевать в Караозе, если приезжаете поздно.</div><div class="sleep"><h4>🛏 Ночь 1 — Караоз</h4><ul><li><b>Köken Pansiyon</b> — Биршен-ханым и Рамазан-бей: <a href="tel:+905052554311">+90 505 255 43 11</a>, <a href="tel:+905055609146">+90 505 560 91 46</a> (в старом отчёте те же номера указаны у Oz Likya Pension — уточнить название).</li><li><b>Gelidonya Pansiyon</b> — <a href="tel:+902428867099">+90 242 886 70 99</a>, моб. <a href="tel:+905343996873">+90 534 399 68 73</a>.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#9d0208">
+  <h3><span class="tag">ДЕНЬ 2</span> <span class="daydate">18 апр, вс</span> Караоз → маяк Гелидония → Адрасан <span class="coords">17–21 км · +880…1200 м · 7–9 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><polygon points="48.0,168 48.0,166.5 298.5,133.5 728.0,167.2 728.0,168" fill="#9d0208" opacity=".12"/><polyline points="48.0,166.5 298.5,133.5 728.0,167.2" fill="none" stroke="#9d0208" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="166.5" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="48.0" y="156.5" text-anchor="start" font-size="11" font-weight="700" fill="#9d0208">10 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Караоз · 0 км</text><circle cx="298.5" cy="133.5" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="298.5" y="123.5" text-anchor="middle" font-size="11" font-weight="700" fill="#9d0208">227 м</text><text x="298.5" y="196" text-anchor="middle" font-size="11" fill="#6d675e">маяк · 7 км</text><circle cx="728.0" cy="167.2" r="4.5" fill="#fff" stroke="#9d0208" stroke-width="2.5"/><text x="728.0" y="157.2" text-anchor="end" font-size="11" font-weight="700" fill="#9d0208">5 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Адрасан · 19 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>17–21 км, +880…1200 м · 7–9 ч</b> — данные источников сильно расходятся (17 / 20,4 / 20,7 / 21,4 км). Самый длинный и трудный день похода.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> <b>надёжной воды нет</b>: цистерна у маяка бывает пустой; родник примерно за 1 км до Адрасана. Нести 3 л на человека.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус у маяка (вид на острова Беш-Адалар); второй — на гребне перед спуском к Адрасану.</span></div>
+  </div>
+  <p>Тропа поднимается по мысу к маяку Гелидония на 227 м, дальше идёт над морем по гребню и спускается к длинному пляжу Адрасана. Участок удалённый, мобильной связи может не быть; новичкам в одиночку его проходить не советуют.</p><div class="tip"><b>Выход в 7:00</b>, до жары. Если день слишком длинный для ребёнка — договоритесь в пансионе о лодке: лодки из Адрасана ходят к бухтам у мыса Гелидония (возможность забрать с берега — уточнять на месте).</div><div class="sleep"><h4>🛏 Ночь 2 — Адрасан</h4><ul><li>Пансионы и мини-отели без «всё включено»; ориентир €25–50 с человека с питанием. Среди упоминаемых — Adaarası Hotel.</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#7b2cbf">
+  <h3><span class="tag">ДЕНЬ 3</span> <span class="daydate">19 апр, пн</span> День отдыха в Адрасане: лодка на Сулуаду <span class="coords">— · — · весь день у моря</span></h3>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span>Лодочный тур к острову Сулуада («турецкие Мальдивы») и бухтам мыса Гелидония; цены в источниках не нашли — спрашивать на набережной.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> —</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> рыба на набережной Адрасана.</span></div>
+  </div>
+  <p>После тяжёлого дня — день у моря. Вторая ночь в том же пансионе.</p>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#0077b6">
+  <h3><span class="tag">ДЕНЬ 4</span> <span class="daydate">20 апр, вт</span> Адрасан → гора Муса → Олимпос <span class="coords">13,7–16 км · +750…910 м · 6–8 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><polygon points="48.0,168 48.0,167.2 320.0,69.2 728.0,166.5 728.0,168" fill="#0077b6" opacity=".12"/><polyline points="48.0,167.2 320.0,69.2 728.0,166.5" fill="none" stroke="#0077b6" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="167.2" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="48.0" y="157.2" text-anchor="start" font-size="11" font-weight="700" fill="#0077b6">5 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Адрасан · 0 км</text><circle cx="320.0" cy="69.2" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="320.0" y="59.2" text-anchor="middle" font-size="11" font-weight="700" fill="#0077b6">650 м</text><text x="320.0" y="196" text-anchor="middle" font-size="11" fill="#6d675e">седловина Муса · 6 км</text><circle cx="728.0" cy="166.5" r="4.5" fill="#fff" stroke="#0077b6" stroke-width="2.5"/><text x="728.0" y="156.5" text-anchor="end" font-size="11" font-weight="700" fill="#0077b6">10 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Олимпос · 15 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span><b>13,7–16 км, +750…910 м · 6–8 ч</b> · подъём через сосновый лес на склон горы Муса и долгий спуск к руинам Олимпоса.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> <b>воды на маршруте почти нет</b>; источник в каньоне Олимпоса сезонный. 2,5–3 л на человека.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> перекус на седловине; обед — поздний, уже в Олимпосе.</span></div>
+  </div>
+  <p>Классический участок тропы с видами на оба залива. Вход в древний город Олимпос платный.</p><div class="tip">Последние ~8 км на карте — реальная тропа из OpenStreetMap: её можно сверить с треком в навигаторе.</div><div class="sleep"><h4>🛏 Ночь 4 — Олимпос</h4><ul><li>Домики на деревьях: <b>Kadir’s Tree Houses</b>, <b>Bayram’s</b>. Либо 2 км по пляжу — пансионы Чиралы (см. <a href="index.html#plan">основную страницу</a>).</li></ul></div>
+</div></div><div class="dayrow solo"><div class="day" style="--dc:#2a9d8f">
+  <h3><span class="tag">ДЕНЬ 5</span> <span class="daydate">21 апр, ср</span> Олимпос → Чиралы → огни Химеры <span class="coords">2 + 2,5 км · +250 м вечером · 2 ч</span></h3><div class="profile"><svg viewBox="0 0 740 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Высоты ключевых точек дня"><line x1="48" y1="168.0" x2="728" y2="168.0" stroke="#e7e1d6"/><text x="42" y="172.0" text-anchor="end" font-size="10" fill="#8a8478">0 м</text><line x1="48" y1="92.0" x2="728" y2="92.0" stroke="#e7e1d6"/><text x="42" y="96.0" text-anchor="end" font-size="10" fill="#8a8478">500 м</text><line x1="48" y1="16.0" x2="728" y2="16.0" stroke="#e7e1d6"/><text x="42" y="20.0" text-anchor="end" font-size="10" fill="#8a8478">1000 м</text><polygon points="48.0,168 48.0,166.5 728.0,167.2 728.0,168" fill="#2a9d8f" opacity=".12"/><polyline points="48.0,166.5 728.0,167.2" fill="none" stroke="#2a9d8f" stroke-width="2.5" stroke-dasharray="7 5"/><circle cx="48.0" cy="166.5" r="4.5" fill="#fff" stroke="#2a9d8f" stroke-width="2.5"/><text x="48.0" y="156.5" text-anchor="start" font-size="11" font-weight="700" fill="#2a9d8f">10 м</text><text x="48.0" y="196" text-anchor="start" font-size="11" fill="#6d675e">Олимпос · 0 км</text><circle cx="728.0" cy="167.2" r="4.5" fill="#fff" stroke="#2a9d8f" stroke-width="2.5"/><text x="728.0" y="157.2" text-anchor="end" font-size="11" font-weight="700" fill="#2a9d8f">5 м</text><text x="728.0" y="196" text-anchor="end" font-size="11" fill="#6d675e">Чиралы · 2 км</text></svg></div>
+  <div class="daysum">
+  <div class="dsrow"><span class="ic">📊</span><span>Утро — руины Олимпоса, днём 2 км по пляжу в Чиралы, вечером — подъём к огням Химеры (Янарташ) на закате.</span></div>
+  <div class="dsrow"><span class="ic">💧</span><span><b>Вода:</b> всё есть в Чиралы.</span></div>
+  <div class="dsrow"><span class="ic">🥪</span><span><b>Привалы и еда:</b> форель в Улупынаре или кафе Чиралы.</span></div>
+  </div>
+  <p>Тот же финал, что и в начале вашего октябрьского похода, — только теперь с другой стороны. Вечер у огней Химеры — с фонариками.</p><div class="tip">Отсюда до Бельдиби/Кемера — такси ~50 минут (см. логистику основной страницы).</div>
+</div></div>
+
+<h2 id="logistics">Логистика</h2>
+<h3>Туда</h3><ul>
+<li><b>Анталья → Кумлуджа</b> — междугородние автобусы на запад (Batı Antalya и др.), дальше такси в Мавикент или Караоз (уточнять цену на месте).</li>
+<li>С ребёнком проще — трансфер напрямую из Антальи или из отеля.</li></ul>
+<h3>Обратно</h3><ul><li>Из Чиралы — такси или долмуш до трассы D400 и дальше в Кемер / Анталью, как в начале прошлого похода
+(<a href="index.html#logistics">логистика на основной странице</a>).</li></ul>
+
+<h2 id="money">Деньги и бронирование</h2>
+<ul><li><b>Пансионы</b> Адрасана и Олимпоса — €25–50 с человека в сутки с питанием (по одному гиду); в Караозе — звонить напрямую.</li>
+<li>Вход в древний Олимпос и к огням Химеры — платный (суммы меняются).</li>
+<li>Лодка на Сулуаду — цены в источниках не нашли.</li>
+<li><b>Бронь:</b> по телефону/WhatsApp; весной заранее за 2–4 недели.</li></ul>
+
+<h2 id="bailouts">Запасные планы</h2>
+<ul><li><b>Караоз</b> и <b>Адрасан</b> — дороги, такси.</li>
+<li>Между Караозом и Адрасаном выходов к дороге практически нет и может не быть связи — при сомнениях возвращайтесь в Караоз.</li>
+<li><b>Олимпос / Чиралы</b> — дорога на D400.</li></ul>
+
+<h2 id="sources">Источники (19)</h2>
+<div class="src-group"><h4>Тропа и этапы</h4><ul><li><a href="https://en.wikivoyage.org/wiki/Lycian_Way" target="_blank">Wikivoyage — Lycian Way</a></li><li><a href="https://walklycianway.com/routes" target="_blank">Walk Lycian Way — этапы, вода, GPX</a></li><li><a href="https://lycianway.co.uk/stages" target="_blank">Lycian Way Guide — все 26 этапов</a></li><li><a href="https://trekopedia.com/karaoz-adrasan-47/" target="_blank">Trekopedia — Karaöz → Adrasan</a></li><li><a href="https://www.alltrails.com/trail/turkey/antalya/lycian-way-karaoz-adrasan" target="_blank">AllTrails — Karaöz – Adrasan</a></li><li><a href="https://www.lycianway.org/2012/04/day-5-mtmusa-adrasan-gelidonya.html" target="_blank">lycianway.org — Day 5: Musa Dağ – Adrasan – Gelidonya – Karaöz</a></li><li><a href="https://www.lycianway.org/2012/04/day-6-karaoz-mavikent-kumluca-finike.html" target="_blank">lycianway.org — Day 6: Karaöz – Mavikent – Kumluca – Finike</a></li><li><a href="https://www.10adventures.com/tour/lycian-way-trek/" target="_blank">10 Adventures — Lycian Way trek</a></li><li><a href="https://r-lovelock.wixsite.com/mysite-1/lycianwayregionfive" target="_blank">R. Lovelock — The Lycian Way: Karaöz to Olympos</a></li></ul></div><div class="src-group"><h4>Жильё</h4><ul><li><a href="https://cultureroutesinturkey.com/wp-content/uploads/2022/02/Lycian-Way-Accommodation-feb-2022-2.pdf" target="_blank">Culture Routes Society — таблица жилья (PDF, 2022)</a></li><li><a href="https://www.lycianway.org/2022/01/lycian-way-accommodation-facilities.html" target="_blank">lycianway.org — список жилья и контактов</a></li><li><a href="https://explorelycia.com/lycian-way-accommodation" target="_blank">Explore Lycia — жильё на тропе</a></li></ul></div><div class="src-group"><h4>Сезон</h4><ul><li><a href="https://walklycianway.com/blog/best-time-to-walk-the-lycian-way" target="_blank">Walk Lycian Way — лучшее время по месяцам</a></li><li><a href="https://caminoweather.com/likya_yolu/best_time_of_year" target="_blank">Camino Weather — Likya Yolu по месяцам</a></li></ul></div><div class="src-group"><h4>Русскоязычные отчёты</h4><ul><li><a href="https://likya-yolu.ru/likijskaya-tropa-otchet-den-sedmoj-antichnyj-gorod-olimpos-poselok-adrasan/" target="_blank">likya-yolu.ru — день 7: Олимпос → Адрасан</a></li><li><a href="https://likya-yolu.ru/likijskaya-tropa-otchet-den-vosmoj-poselok-adrasan-poselok-karayoz/" target="_blank">likya-yolu.ru — день 8: Адрасан → Караоз</a></li><li><a href="https://solowanderer.ru/lykia-2019/" target="_blank">solowanderer.ru — осенний поход Анталья → Караоз</a></li><li><a href="https://pavelrudenko.ru/article/likiyskaya-tropa-chast-2/" target="_blank">Павел Руденко — Ликийская тропа, часть 2</a></li><li><a href="https://klubgidov.ru/turciya/po-likijskoj-trope-s-detmi-19794" target="_blank">klubgidov.ru — по Ликийской тропе с детьми</a></li></ul></div>
+</main>
+<footer><div class="wrap"><p>Маршрут собран в октябре 2026 по 19 источникам (ссылки выше); цифры из разных источников часто расходятся —
+перед поездкой перепроверьте даты работы, цены и телефоны напрямую. Высоты точек сверены с моделью рельефа SRTM
+(данные NASA, через AWS Terrain Tiles). Карта: Leaflet + OpenStreetMap / OpenTopoMap / Esri.</p></div></footer>
+<script>
+const LINES=[{"day": 1, "color": "#e63946", "label": "День 1 · 17 апр, сб · Мавикент → Караоз (разогрев) · 8–11 км", "segs": [{"real": false, "ll": [[36.3, 30.355], [36.272, 30.392]]}]}, {"day": 2, "color": "#9d0208", "label": "День 2 · 18 апр, вс · Караоз → маяк Гелидония → Адрасан · 17–21 км", "segs": [{"real": false, "ll": [[36.272, 30.392], [36.2355, 30.4203], [36.305, 30.476]]}]}, {"day": 4, "color": "#0077b6", "label": "День 4 · 20 апр, вт · Адрасан → гора Муса → Олимпос · 13,7–16 км", "segs": [{"real": false, "ll": [[36.305, 30.476], [36.338, 30.46654]]}, {"real": true, "ll": [[36.338, 30.46654], [36.33808, 30.46666], [36.33807, 30.46679], [36.33812, 30.46689], [36.33811, 30.46695], [36.3382, 30.46706], [36.33791, 30.46744], [36.33777, 30.46747], [36.3377, 30.46754], [36.33777, 30.46763], [36.33777, 30.46769], [36.33794, 30.46784], [36.33799, 30.46812], [36.33792, 30.46829], [36.33793, 30.46834], [36.33814, 30.4683], [36.33823, 30.46834], [36.33824, 30.46847], [36.33848, 30.46895], [36.3385, 30.46917], [36.33865, 30.46952], [36.33865, 30.46998], [36.3388, 30.47037], [36.33889, 30.47066], [36.33908, 30.47101], [36.33938, 30.47127], [36.33955, 30.4713], [36.33976, 30.47125], [36.34043, 30.47151], [36.34069, 30.47154], [36.34077, 30.47162], [36.34079, 30.47177], [36.34063, 30.47193], [36.34063, 30.47201], [36.34072, 30.47206], [36.34112, 30.47215], [36.34115, 30.47238], [36.34141, 30.47242], [36.34161, 30.47249], [36.34177, 30.47269], [36.34198, 30.47314], [36.34251, 30.47345], [36.3426, 30.47358], [36.34272, 30.47361], [36.34297, 30.47356], [36.34307, 30.47371], [36.34337, 30.4739], [36.34359, 30.47392], [36.34365, 30.47398], [36.34396, 30.47403], [36.34406, 30.47409], [36.34429, 30.47408], [36.34475, 30.47444], [36.34504, 30.47447], [36.34522, 30.47475], [36.34537, 30.47472], [36.34542, 30.4748], [36.34542, 30.47487], [36.34558, 30.47518], [36.3458, 30.47526], [36.34588, 30.47534], [36.34606, 30.47528], [36.34619, 30.47535], [36.34633, 30.47538], [36.34639, 30.47539], [36.34654, 30.4755], [36.3467, 30.47553], [36.34686, 30.47568], [36.34718, 30.4757], [36.3474, 30.4758], [36.34751, 30.4759], [36.34756, 30.47597], [36.34765, 30.47598], [36.34781, 30.476], [36.34795, 30.47602], [36.34817, 30.47613], [36.34829, 30.47614], [36.34851, 30.47612], [36.34874, 30.47602], [36.34901, 30.47605], [36.34921, 30.47627], [36.34944, 30.47607], [36.34964, 30.47607], [36.34976, 30.47615], [36.34989, 30.47611], [36.34999, 30.47615], [36.35007, 30.47623], [36.35024, 30.47625], [36.3503, 30.47634], [36.35033, 30.47648], [36.35028, 30.4766], [36.35027, 30.47673], [36.35035, 30.47677], [36.35046, 30.47683], [36.35059, 30.47679], [36.35063, 30.47668], [36.3507, 30.47661], [36.3508, 30.47662], [36.35087, 30.47675], [36.35095, 30.47673], [36.351, 30.47665], [36.35109, 30.47664], [36.35117, 30.47665], [36.35124, 30.47679], [36.35131, 30.4768], [36.35138, 30.47688], [36.35139, 30.477], [36.35147, 30.47715], [36.35147, 30.47729], [36.35147, 30.47745], [36.35157, 30.4775], [36.35166, 30.47752], [36.35172, 30.47753], [36.35177, 30.4775], [36.35193, 30.4776], [36.35196, 30.4777], [36.35204, 30.47773], [36.35218, 30.47765], [36.35223, 30.4777], [36.35239, 30.47758], [36.35247, 30.47769], [36.35253, 30.47769], [36.35263, 30.47749], [36.35277, 30.47744], [36.35293, 30.47746], [36.35312, 30.47759], [36.3533, 30.47772], [36.35342, 30.4777], [36.35344, 30.47786], [36.3535, 30.47789], [36.35364, 30.47784], [36.35374, 30.4779], [36.35383, 30.47802], [36.35395, 30.47801], [36.354, 30.47807], [36.35406, 30.47803], [36.3541, 30.47798], [36.35421, 30.47801], [36.35425, 30.47816], [36.35433, 30.47833], [36.35446, 30.47831], [36.35453, 30.47844], [36.35463, 30.47835], [36.35472, 30.47842], [36.35478, 30.47833], [36.35486, 30.47828], [36.35491, 30.47819], [36.35498, 30.4781], [36.3551, 30.47815], [36.35536, 30.47799], [36.35554, 30.47787], [36.35574, 30.4777], [36.35584, 30.47756], [36.35597, 30.47746], [36.35605, 30.4773], [36.35616, 30.47731], [36.35626, 30.47735], [36.35632, 30.47739], [36.35641, 30.47735], [36.35645, 30.47712], [36.35648, 30.47701], [36.35652, 30.47693], [36.35656, 30.4767], [36.35663, 30.47647], [36.35659, 30.47621], [36.35661, 30.47596], [36.35681, 30.47541], [36.3569, 30.47527], [36.35723, 30.47441], [36.35725, 30.47414], [36.35735, 30.47372], [36.35814, 30.47334], [36.35831, 30.47331], [36.35846, 30.47339], [36.35864, 30.4736], [36.35941, 30.47393], [36.35953, 30.47394], [36.35973, 30.47392], [36.36013, 30.47369], [36.36072, 30.47372], [36.36108, 30.47367], [36.36128, 30.47367], [36.36145, 30.47362], [36.36186, 30.47322], [36.36194, 30.47294], [36.36198, 30.47288], [36.36203, 30.47286], [36.36212, 30.47286], [36.36224, 30.47293], [36.36247, 30.47298], [36.363, 30.473], [36.36312, 30.473], [36.36333, 30.47302], [36.36343, 30.4731], [36.36362, 30.47351], [36.36373, 30.4736], [36.36386, 30.47359], [36.36395, 30.47372], [36.36391, 30.47407], [36.36381, 30.4745], [36.36385, 30.47476], [36.3637, 30.47523], [36.36377, 30.47548], [36.36393, 30.47608], [36.36408, 30.47619], [36.36421, 30.47663], [36.36411, 30.47679], [36.36408, 30.47709], [36.364, 30.47744], [36.36389, 30.47754], [36.36367, 30.478], [36.36332, 30.47826], [36.36328, 30.47841], [36.36305, 30.47864], [36.36296, 30.47885], [36.36309, 30.47897], [36.36325, 30.479], [36.36336, 30.47913], [36.36358, 30.47926], [36.36364, 30.47938], [36.36375, 30.47943], [36.36382, 30.47959], [36.36384, 30.47974], [36.36385, 30.47996], [36.36408, 30.48013], [36.3644, 30.48013], [36.36445, 30.48022], [36.3645, 30.48024], [36.36457, 30.48018], [36.36478, 30.48025], [36.3649, 30.48028], [36.36504, 30.48025], [36.36526, 30.48018], [36.36529, 30.48014], [36.36534, 30.48013], [36.36542, 30.48018], [36.36566, 30.48007], [36.36591, 30.48017], [36.36602, 30.48034], [36.36619, 30.48035], [36.36641, 30.48056], [36.36651, 30.48072], [36.36674, 30.48081], [36.36687, 30.48075], [36.36695, 30.48059], [36.367, 30.48054], [36.36723, 30.4806], [36.36729, 30.48069], [36.3674, 30.48075], [36.36738, 30.48085], [36.36743, 30.4809], [36.36747, 30.4809], [36.36752, 30.48085], [36.36757, 30.48084], [36.36761, 30.48094], [36.36799, 30.48112], [36.36811, 30.4811], [36.3683, 30.48117], [36.36843, 30.48114], [36.36853, 30.48119], [36.36863, 30.48132], [36.36865, 30.48142], [36.36859, 30.48153], [36.36861, 30.48169], [36.36869, 30.48176], [36.36886, 30.48178], [36.36894, 30.48172], [36.369, 30.48172], [36.36909, 30.48174], [36.3692, 30.48184], [36.36928, 30.48185], [36.36935, 30.48196], [36.36944, 30.48196], [36.36955, 30.482], [36.36964, 30.48192], [36.3697, 30.48193], [36.36976, 30.48186], [36.3698, 30.48181], [36.36984, 30.48173], [36.36987, 30.48166], [36.37002, 30.48164], [36.37016, 30.4817], [36.37023, 30.48169], [36.37029, 30.48168], [36.37035, 30.48169], [36.37043, 30.48163], [36.37051, 30.48163], [36.37064, 30.48158], [36.3707, 30.48154], [36.37079, 30.48154], [36.37083, 30.48149], [36.37104, 30.48147], [36.37115, 30.48142], [36.37126, 30.48149], [36.3714, 30.48145], [36.37151, 30.48142], [36.37156, 30.48134], [36.37158, 30.48125], [36.37162, 30.48119], [36.37168, 30.48118], [36.37176, 30.4811], [36.37185, 30.48114], [36.37191, 30.48108], [36.37199, 30.48106], [36.37201, 30.48097], [36.37211, 30.48091], [36.37217, 30.48093], [36.37224, 30.48087], [36.37234, 30.4808], [36.37244, 30.4807], [36.37254, 30.48072], [36.37258, 30.48088], [36.37268, 30.48093], [36.37277, 30.48094], [36.37287, 30.48092], [36.37294, 30.48093], [36.37305, 30.48095], [36.37314, 30.48095], [36.37326, 30.48094], [36.37335, 30.48094], [36.37347, 30.48096], [36.37356, 30.48085], [36.37366, 30.48078], [36.37366, 30.48065], [36.37382, 30.48063], [36.37395, 30.48066], [36.37425, 30.48062], [36.37451, 30.48071], [36.37466, 30.48066], [36.37482, 30.48067], [36.37487, 30.48065], [36.37493, 30.48061], [36.37506, 30.48044], [36.37515, 30.48046], [36.37526, 30.48051], [36.37532, 30.48046], [36.37533, 30.48038], [36.37538, 30.48032], [36.37544, 30.48026], [36.37553, 30.48026], [36.37562, 30.48011], [36.37573, 30.48011], [36.37583, 30.48015], [36.37591, 30.4801], [36.37595, 30.47996], [36.37604, 30.47993], [36.3761, 30.47998], [36.37621, 30.47989], [36.37627, 30.47992], [36.37631, 30.47985], [36.37642, 30.4798], [36.3765, 30.4798], [36.37662, 30.47974], [36.3767, 30.47981], [36.37674, 30.47976], [36.37677, 30.47971], [36.37688, 30.47973], [36.3769, 30.47969], [36.37694, 30.47964], [36.37697, 30.47953], [36.37701, 30.47947], [36.3771, 30.4796], [36.37717, 30.47942], [36.37737, 30.47912], [36.3775, 30.47911], [36.37759, 30.47892], [36.37767, 30.47887], [36.37802, 30.47817], [36.37832, 30.47766], [36.37845, 30.47738], [36.3785, 30.47728], [36.37861, 30.47723], [36.37869, 30.47737], [36.37882, 30.47739], [36.37885, 30.47716], [36.37897, 30.47719], [36.37908, 30.47742], [36.37927, 30.47737], [36.3793, 30.47727], [36.37942, 30.47723], [36.3796, 30.47695], [36.3796, 30.47673], [36.37974, 30.47655], [36.37983, 30.47642], [36.37998, 30.47637], [36.38013, 30.47645], [36.3802, 30.47632], [36.38037, 30.47639], [36.38055, 30.4761], [36.38083, 30.47604], [36.38112, 30.47581], [36.38154, 30.47567], [36.38189, 30.47515], [36.3823, 30.47478], [36.38289, 30.47447], [36.38393, 30.47369], [36.38468, 30.47341], [36.38563, 30.47338], [36.38649, 30.47306], [36.38664, 30.47297], [36.38707, 30.47306], [36.38732, 30.47316], [36.38748, 30.4731], [36.38769, 30.47317], [36.38788, 30.47295], [36.38803, 30.47294], [36.38813, 30.47305], [36.38837, 30.47312], [36.38879, 30.47306], [36.38922, 30.47313], [36.38962, 30.47303], [36.38971, 30.47311], [36.38975, 30.47317], [36.38987, 30.4732], [36.38991, 30.47316], [36.39004, 30.47313], [36.39017, 30.47316], [36.3904, 30.47306], [36.39059, 30.47306], [36.39087, 30.4729]]}]}, {"day": 5, "color": "#2a9d8f", "label": "День 5 · 21 апр, ср · Олимпос → Чиралы → огни Химеры · 2 + 2,5 км", "segs": [{"real": false, "ll": [[36.3967, 30.4728], [36.4056, 30.4762]]}]}];
+const MARKS=[{"ll": [36.3, 30.355], "name": "Мавикент", "approx": true, "ele": 5, "srtm": 21, "mark": null, "color": "#1d3557", "note": "старт разогревочного дня", "kind": "poi"}, {"ll": [36.272, 30.392], "name": "Караоз", "approx": true, "ele": 10, "srtm": 20, "mark": "С", "color": "#1d3557", "note": "ночи 0 и 1; пансионы Köken, Gelidonya", "kind": "stage"}, {"ll": [36.2355, 30.4203], "name": "маяк Гелидония", "approx": true, "ele": 227, "srtm": 244, "mark": null, "color": "#1d3557", "note": "227 м; цистерна с водой бывает пустой", "kind": "poi"}, {"ll": [36.305, 30.476], "name": "Адрасан", "approx": true, "ele": 5, "srtm": -2, "mark": "2", "color": "#9d0208", "note": "ночи 2 и 3; пляж, лодки на Сулуаду", "kind": "stage"}, {"ll": [36.3967, 30.4728], "name": "Олимпос", "approx": false, "ele": 10, "srtm": 7, "mark": "4", "color": "#0077b6", "note": "ночь 4; древний город, домики на деревьях", "kind": "stage"}, {"ll": [36.4056, 30.4762], "name": "Чиралы", "approx": false, "ele": 5, "srtm": 5, "mark": "Ф", "color": "#2a9d8f", "note": "финиш; огни Химеры вечером", "kind": "stage"}];
+const map=L.map('map',{preferCanvas:true});
+const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'});
+const topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'&copy; OpenStreetMap, SRTM | OpenTopoMap (CC-BY-SA)'});
+const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'&copy; Esri World Imagery'});
+topo.addTo(map);
+let bounds=null; const groups={};
+LINES.forEach(d=>{
+  const g=L.featureGroup();
+  d.segs.forEach(s=>g.addLayer(L.polyline(s.ll,s.real?{color:d.color,weight:5,opacity:.92}:{color:d.color,weight:4,opacity:.9,dashArray:'8 7'}).bindPopup('<b>'+d.label+'</b>'+(s.real?'<br>реальная тропа (OSM)':'<br>схема по ключевым точкам'))));
+  g.addTo(map); groups['День '+d.day]=g;
+  bounds=bounds?bounds.extend(g.getBounds()):g.getBounds();
+});
+function icon(cls,txt,size,bg){return L.divIcon({className:'',html:'<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;background:'+bg+'">'+txt+'</div>',iconSize:[size,size],iconAnchor:[size/2,size/2],popupAnchor:[0,-size/2]});}
+MARKS.forEach(m=>{
+  const ap=m.approx?' <span class="approx">≈</span>':'';
+  const pop='<b>'+m.name+'</b>'+ap+'<br>'+m.ele+' м'+(m.approx?'<br><i>место примерное</i>':'')+(m.note?'<br>'+m.note:'');
+  let ic;
+  if(m.kind==='poi') ic=icon('poiIcon','⭐',24,'#e9c46a');
+  else if(m.kind==='exit') ic=icon('exitIcon','\u{1F695}',24,'#6c757d');
+  else ic=icon('ptIcon',m.mark||'•',28,m.color);
+  const mk=L.marker(m.ll,{icon:ic,zIndexOffset:m.kind==='stage'?1000:0}).bindPopup(pop,{maxWidth:300});
+  if(m.kind==='stage') mk.bindTooltip(m.name+(m.approx?' ≈':''),{permanent:true,direction:'right',offset:[16,0],className:'stLabel'});
+  mk.addTo(map);
+});
+map.fitBounds(bounds.pad(0.08));
+L.control.layers({'Рельеф (OpenTopoMap)':topo,'Схема (OSM)':osm,'Спутник (Esri)':esri},groups,{collapsed:true}).addTo(map);
+L.control.scale({imperial:false}).addTo(map);
+</script>
+</body>
+</html>
